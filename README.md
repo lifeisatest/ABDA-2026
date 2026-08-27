@@ -1,0 +1,1349 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABDA 2026 - 22nd Asian Breast Disease Association E-Poster Portal</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            sky: '#0284c7',
+                            skyLight: '#38bdf8',
+                            magenta: '#ec4899',
+                            magentaDark: '#be185d',
+                            navy: '#0f172a',
+                            navyDeep: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Canvas Confetti for Voting Feedback -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <style>
+        /* Custom scrollbars & canvas zoom constraints */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .poster-canvas-container {
+            cursor: grab;
+        }
+        .poster-canvas-container:active {
+            cursor: grabbing;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 font-sans antialiased bg-slate-100">
+
+    <!-- Top Conference Banner replica matching user image -->
+    <header class="relative overflow-hidden bg-gradient-to-r from-sky-500 via-sky-600 to-indigo-800 text-white shadow-xl border-b-4 border-pink-500">
+        <!-- Background Pattern Decor -->
+        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 relative z-10">
+            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
+                
+                <!-- Left Side: Organisers & Supporting Logos -->
+                <div class="flex items-center space-x-6 bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20">
+                    <!-- Organised By Block -->
+                    <div class="text-center sm:text-left">
+                        <span class="text-[10px] uppercase tracking-wider text-sky-100 font-bold block mb-1">Organised By</span>
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-white rounded-full p-1.5 shadow flex items-center justify-center text-sky-700 font-extrabold text-xs ring-2 ring-pink-400">
+                                <i class="fa-solid font-bold fa-ribbon text-pink-500 text-lg"></i> ABDA
+                            </div>
+                            <div class="hidden sm:block text-left border-l border-white/30 pl-3">
+                                <p class="text-xs font-bold leading-tight text-white">College of Radiology</p>
+                                <p class="text-[10px] text-sky-200">Academy of Medicine Malaysia</p>
+                                <p class="text-[10px] font-semibold text-pink-200">MYRAD</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="h-10 w-px bg-white/20"></div>
+
+                    <!-- Supported By Block -->
+                    <div class="text-center sm:text-left">
+                        <span class="text-[10px] uppercase tracking-wider text-sky-100 font-bold block mb-1">Supported By</span>
+                        <div class="flex items-center gap-2 text-xs font-semibold text-sky-100">
+                            <span class="bg-white/20 px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-building-columns mr-1"></i>MyCEB</span>
+                            <span class="bg-white/20 px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-handshake mr-1"></i>Meet in Malaysia</span>
+                            <span class="bg-pink-500/80 text-white px-2 py-1 rounded text-[11px] font-bold"><i class="fa-solid fa-plane-arrival mr-1"></i>Visit Malaysia 2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Center Title Block matching the ABDA Banner styling -->
+                <div class="text-center lg:text-left flex-1">
+                    <div class="inline-block bg-pink-600 text-white text-xs font-extrabold uppercase px-3 py-1 rounded-full shadow-md tracking-wider mb-1 animate-pulse">
+                        22nd Annual Scientific Meeting 2026
+                    </div>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
+                        Asian Breast Disease Association <span class="text-pink-300">(ABDA)</span>
+                    </h1>
+                    <p class="text-sm sm:text-base font-semibold text-sky-100 mt-1 flex items-center justify-center lg:justify-start gap-2">
+                        <i class="fa-solid fa-bullseye text-pink-400"></i>
+                        <span>Theme: <strong class="text-white underline decoration-pink-400">Strategising Multidisciplinary Management of Breast Diseases</strong></span>
+                    </p>
+                </div>
+
+                <!-- Right Action / Kiosk Controls -->
+                <div class="flex items-center gap-2">
+                    <button onclick="openBatchImporterModal()" class="bg-sky-900/80 hover:bg-sky-900 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/20 transition flex items-center gap-2 shadow" title="Batch Add/Update E-Posters">
+                        <i class="fa-solid fa-file-import text-sky-300"></i>
+                        <span class="hidden sm:inline">Add/Import Posters</span>
+                    </button>
+                    <button onclick="toggleKioskMode()" class="bg-slate-900/60 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/20 transition flex items-center gap-2 shadow" title="Toggle Touchscreen Kiosk Mode">
+                        <i class="fa-solid fa-tv text-pink-400"></i>
+                        <span class="hidden sm:inline">Kiosk Mode</span>
+                    </button>
+                    <button onclick="openGitHubGuideModal()" class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold px-3 py-2 rounded-xl shadow-lg transition flex items-center gap-2 border border-pink-400">
+                        <i class="fa-brands fa-github text-sm"></i>
+                        <span>GitHub Pages Setup</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation & Quick Stats Bar -->
+    <div class="bg-slate-900 text-slate-300 shadow-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2.5 flex flex-wrap items-center justify-between gap-4 text-xs">
+            <div class="flex items-center space-x-6">
+                <div class="flex items-center gap-2 text-slate-200">
+                    <i class="fa-solid fa-location-dot text-pink-500"></i>
+                    <span>The Vertical, Connexion Conference & Event Centre, Bangsar South, Kuala Lumpur</span>
+                </div>
+                <div class="hidden md:flex items-center gap-2 border-l border-slate-700 pl-6">
+                    <i class="fa-solid fa-calendar-days text-sky-400"></i>
+                    <span>19–20 September 2026</span>
+                </div>
+            </div>
+
+            <!-- Live Gallery Counters -->
+            <div class="flex items-center space-x-4 ml-auto">
+                <span class="bg-slate-800 text-sky-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono">
+                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">60</span> Posters
+                </span>
+                <button onclick="filterBookmarks()" id="bookmarkFilterBtn" class="bg-slate-800 hover:bg-slate-700 text-pink-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-heart text-xs text-pink-500"></i>
+                    <span>Bookmarks:</span>
+                    <span id="bookmarkCount" class="font-bold text-white">0</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Gallery Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        
+        <!-- Controls & Filters Block -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 sm:p-5 mb-6">
+            <div class="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4">
+                
+                <!-- Search Bar -->
+                <div class="relative flex-1">
+                    <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fa-solid fa-magnifying-glass text-sm"></i>
+                    </div>
+                    <input type="text" id="searchInput" onkeyup="handleSearch()" 
+                           placeholder="Search poster title, author, abstract ID, keywords..." 
+                           class="w-full pl-10 pr-10 py-2.5 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-sky-500 transition">
+                    <button id="clearSearchBtn" onclick="clearSearch()" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600">
+                        <i class="fa-solid fa-circle-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Sort & View Controls -->
+                <div class="flex flex-wrap items-center gap-3">
+                    <!-- Category Dropdown -->
+                    <select id="categorySelect" onchange="applyFilters()" class="py-2.5 px-3 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium text-slate-700">
+                        <option value="ALL">All Categories</option>
+                        <option value="Scientific Research">Scientific Research</option>
+                        <option value="Educational Exhibit">Educational Exhibit</option>
+                        <option value="Case Report/Series">Case Report/Series</option>
+                    </select>
+
+                    <!-- Sort Dropdown -->
+                    <select id="sortSelect" onchange="applyFilters()" class="py-2.5 px-3 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium text-slate-700">
+                        <option value="id-asc">Sort by: Poster ID</option>
+                        <option value="votes-desc">Sort by: Most Liked</option>
+                        <option value="views-desc">Sort by: Most Viewed</option>
+                        <option value="title-asc">Sort by: Title A-Z</option>
+                    </select>
+
+                    <!-- Toggle Grid / List View -->
+                    <div class="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200">
+                        <button id="gridViewBtn" onclick="setViewMode('grid')" class="p-2 text-xs rounded-lg bg-white shadow-xs text-sky-600 font-bold transition">
+                            <i class="fa-solid fa-border-all text-sm"></i>
+                        </button>
+                        <button id="listViewBtn" onclick="setViewMode('list')" class="p-2 text-xs rounded-lg text-slate-500 hover:text-slate-800 transition">
+                            <i class="fa-solid fa-list text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Filter Badges -->
+            <div class="flex items-center gap-2 mt-4 overflow-x-auto pb-1 text-xs font-medium scrollbar-none" id="categoryBadges">
+                <button onclick="setCategoryFilter('ALL')" class="category-btn active border px-3 py-1.5 rounded-full whitespace-nowrap bg-sky-600 text-white border-sky-600 font-semibold shadow-xs">All Posters</button>
+                <button onclick="setCategoryFilter('Scientific Research')" class="category-btn border px-3 py-1.5 rounded-full whitespace-nowrap bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100">Scientific Research</button>
+                <button onclick="setCategoryFilter('Educational Exhibit')" class="category-btn border px-3 py-1.5 rounded-full whitespace-nowrap bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100">Educational Exhibit</button>
+                <button onclick="setCategoryFilter('Case Report/Series')" class="category-btn border px-3 py-1.5 rounded-full whitespace-nowrap bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100">Case Report/Series</button>
+            </div>
+        </div>
+
+        <!-- Poster Grid View -->
+        <div id="posterGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <!-- Dynamic posters injected via JS -->
+        </div>
+
+        <!-- Empty State Notice -->
+        <div id="noResults" class="hidden text-center py-16 bg-white rounded-2xl border border-dashed border-slate-300 my-6">
+            <div class="w-16 h-16 bg-pink-50 text-pink-500 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <h3 class="text-lg font-bold text-slate-800">No posters found</h3>
+            <p class="text-sm text-slate-500 max-w-md mx-auto mt-1">Try adjusting your search query, clearing filters, or checking back later.</p>
+            <button onclick="resetAllFilters()" class="mt-4 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-xl transition">Reset All Filters</button>
+        </div>
+    </main>
+
+    <!-- Interactive Poster Modal -->
+    <div id="posterModal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-6xl h-[94vh] flex flex-col overflow-hidden border border-slate-700">
+            
+            <!-- Modal Header -->
+            <div class="bg-slate-900 text-white px-4 sm:px-6 py-3.5 flex items-center justify-between border-b border-slate-800">
+                <div class="flex items-center space-x-3 overflow-hidden pr-2">
+                    <span id="modalPosterId" class="bg-pink-600 text-white text-xs font-black px-2.5 py-1 rounded-md tracking-wider">
+                        ABDA26-001
+                    </span>
+                    <span id="modalCategoryBadge" class="bg-sky-900 text-sky-200 text-xs font-semibold px-2.5 py-1 rounded-md hidden sm:inline-block">
+                        Radiology
+                    </span>
+                    <h2 id="modalPosterTitle" class="text-sm sm:text-base font-bold text-slate-100 truncate">
+                        Poster Title Placeholder
+                    </h2>
+                </div>
+
+                <div class="flex items-center space-x-2 flex-shrink-0">
+                    <!-- Speech Reader Trigger -->
+                    <button id="ttsBtn" onclick="toggleAudioWalkthrough()" class="p-2 text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl text-xs flex items-center gap-1.5 transition" title="Listen to AI Audio Abstract Walkthrough">
+                        <i id="ttsIcon" class="fa-solid fa-volume-high text-sky-400"></i>
+                        <span class="hidden md:inline text-xs font-medium">Audio Summary</span>
+                    </button>
+
+                    <!-- Bookmark Toggle -->
+                    <button id="modalBookmarkBtn" onclick="toggleModalBookmark()" class="p-2 text-slate-300 hover:text-pink-400 bg-slate-800 hover:bg-slate-700 rounded-xl transition" title="Save to My Bookmarks">
+                        <i class="fa-regular fa-heart text-base"></i>
+                    </button>
+
+                    <!-- Fullscreen Toggle -->
+                    <button onclick="toggleModalFullscreen()" class="p-2 text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition" title="Fullscreen Poster">
+                        <i class="fa-solid fa-expand text-sm"></i>
+                    </button>
+
+                    <!-- Close Button -->
+                    <button onclick="closePosterModal()" class="p-2 text-slate-400 hover:text-red-400 bg-slate-800 hover:bg-slate-700 rounded-xl transition">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Modal Content Grid (Canvas View & Metadata / Q&A Pane) -->
+            <div class="flex-1 flex flex-col lg:flex-row overflow-hidden bg-slate-900 relative">
+                
+                <!-- Main Canvas Interactive Viewer -->
+                <div class="flex-1 flex flex-col relative bg-slate-950 overflow-hidden">
+                    
+                    <!-- Viewer Toolbar -->
+                    <div class="bg-slate-900/90 text-slate-300 text-xs px-4 py-2 flex items-center justify-between border-b border-slate-800/80 z-20">
+                        <div class="flex items-center space-x-2">
+                            <button onclick="zoomPoster(1.2)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 transition" title="Zoom In">
+                                <i class="fa-solid fa-magnifying-glass-plus"></i>
+                            </button>
+                            <button onclick="zoomPoster(0.8)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 transition" title="Zoom Out">
+                                <i class="fa-solid fa-magnifying-glass-minus"></i>
+                            </button>
+                            <button onclick="resetPosterZoom()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 transition" title="Reset View">
+                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
+                            </button>
+                            <span id="zoomLevelDisplay" class="text-[11px] text-slate-400 font-mono ml-2">100%</span>
+                        </div>
+
+                        <div class="flex items-center space-x-3">
+                            <span class="text-slate-400 text-[11px] hidden sm:inline"><i class="fa-solid fa-hand-pointer mr-1"></i>Drag to pan</span>
+                            <button onclick="likeCurrentPoster()" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold transition flex items-center gap-1.5 shadow">
+                                <i class="fa-solid fa-thumbs-up"></i>
+                                <span>Like</span>
+                                <span id="modalLikeCount" class="bg-pink-800 px-1.5 py-0.2 rounded-full text-[10px]">0</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Canvas Box -->
+                    <div id="posterCanvasWrapper" class="flex-1 overflow-auto p-4 flex items-center justify-center poster-canvas-container relative select-none">
+                        <canvas id="posterCanvas" class="shadow-2xl rounded border border-slate-800 bg-white transition-transform duration-100"></canvas>
+                    </div>
+
+                    <!-- Speech Synthesis Progress Bar -->
+                    <div id="ttsProgressContainer" class="hidden bg-slate-900 border-t border-slate-800 px-4 py-1.5 flex items-center justify-between text-xs text-sky-300">
+                        <div class="flex items-center gap-2">
+                            <i class="fa-solid fa-circle-play text-pink-500 animate-pulse"></i>
+                            <span>Playing AI Voice Presentation Abstract...</span>
+                        </div>
+                        <button onclick="stopAudioWalkthrough()" class="text-slate-400 hover:text-white text-xs underline">Stop</button>
+                    </div>
+                </div>
+
+                <!-- Right Sidebar: Metadata, Abstract, Q&A, Citation -->
+                <div class="w-full lg:w-96 bg-white border-t lg:border-t-0 lg:border-l border-slate-200 flex flex-col h-full overflow-hidden">
+                    
+                    <!-- Sidebar Tabs -->
+                    <div class="flex border-b border-slate-200 bg-slate-50">
+                        <button id="tabAbstractBtn" onclick="switchSidebarTab('abstract')" class="flex-1 py-3 text-xs font-bold text-sky-600 border-b-2 border-sky-600 transition">
+                            <i class="fa-solid fa-file-lines mr-1.5"></i> Abstract
+                        </button>
+                        <button id="tabCommentsBtn" onclick="switchSidebarTab('comments')" class="flex-1 py-3 text-xs font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition">
+                            <i class="fa-solid fa-comments mr-1.5"></i> Q&A / Discussion (<span id="commentCountBadge">0</span>)
+                        </button>
+                    </div>
+
+                    <!-- Tab 1: Abstract & Details -->
+                    <div id="tabAbstractContent" class="flex-1 p-5 overflow-y-auto space-y-4">
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Authors & Affiliations</span>
+                            <p id="modalAuthors" class="text-xs font-bold text-slate-800 mt-1 leading-relaxed">
+                                Author List Placeholder
+                            </p>
+                            <p id="modalAffiliations" class="text-[11px] text-slate-500 mt-0.5 italic">
+                                Institution Placeholder
+                            </p>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Keywords</span>
+                            <div id="modalKeywords" class="flex flex-wrap gap-1">
+                                <!-- Tags -->
+                            </div>
+                        </div>
+
+                        <hr class="border-slate-100">
+
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Background & Objectives</span>
+                            <p id="modalBackground" class="text-xs text-slate-600 leading-relaxed">
+                                Abstract content placeholder...
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Methods & Results</span>
+                            <p id="modalMethods" class="text-xs text-slate-600 leading-relaxed">
+                                Abstract methods placeholder...
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Conclusion</span>
+                            <p id="modalConclusion" class="text-xs text-slate-700 font-medium leading-relaxed bg-sky-50 p-3 rounded-xl border border-sky-100">
+                                Abstract conclusion placeholder...
+                            </p>
+                        </div>
+
+                        <!-- Citation & Export Actions -->
+                        <div class="pt-2">
+                            <button onclick="copyCitation()" class="w-full py-2.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl border border-slate-300 transition flex items-center justify-center gap-2">
+                                <i class="fa-solid fa-quote-right text-sky-600"></i>
+                                <span>Copy APA Citation</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tab 2: Comments & Q&A Discussion -->
+                    <div id="tabCommentsContent" class="hidden flex-1 flex flex-col h-full overflow-hidden p-4">
+                        <div id="commentsList" class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs">
+                            <!-- Comments injected here -->
+                        </div>
+
+                        <!-- Post Comment Form -->
+                        <div class="mt-3 pt-3 border-t border-slate-200">
+                            <input type="text" id="commenterName" placeholder="Your Name & Institution" class="w-full px-3 py-1.5 text-xs bg-slate-50 border border-slate-300 rounded-lg mb-2 focus:outline-none focus:ring-1 focus:ring-sky-500">
+                            <div class="flex gap-2">
+                                <textarea id="commentText" rows="2" placeholder="Ask a question or leave feedback for authors..." class="flex-1 p-2 text-xs bg-slate-50 border border-slate-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-sky-500 resize-none"></textarea>
+                                <button onclick="addComment()" class="px-3 bg-pink-600 hover:bg-pink-700 text-white rounded-lg text-xs font-bold transition flex items-center justify-center">
+                                    <i class="fa-solid fa-paper-plane"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GitHub Pages Setup & Kiosk Modal -->
+    <div id="githubGuideModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xl">
+                        <i class="fa-brands fa-github"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Deploying on GitHub Pages for ABDA 2026</h3>
+                        <p class="text-xs text-slate-500">Step-by-step instructions to launch this static website for free</p>
+                    </div>
+                </div>
+                <button onclick="closeGitHubGuideModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+    <!-- Batch Poster Importer Modal for Organizers -->
+    <div id="batchImporterModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center text-xl shadow">
+                        <i class="fa-solid fa-file-import"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Add & Import Submitted E-Posters</h3>
+                        <p class="text-xs text-slate-500">Easily update poster data or paste custom JSON metadata</p>
+                    </div>
+                </div>
+                <button onclick="closeBatchImporterModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-4 text-xs text-slate-700">
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-1">Option A: Edit Directly in `index.html`</h4>
+                    <p class="text-slate-600 leading-relaxed">
+                        Open <code class="bg-white px-1.5 py-0.5 rounded border text-pink-600">index.html</code> in any text editor. Look for line ~320 with variable <code class="bg-white px-1.5 py-0.5 rounded border text-sky-600 font-bold">RAW_SUBMITTED_POSTERS</code>. Simply add or update objects with the poster details:
+                    </p>
+                    <pre class="bg-slate-900 text-sky-300 p-3 rounded-lg mt-2 overflow-x-auto text-[11px]">
+{
+  id: "ABDA26-001",
+  title: "Your Submitted Poster Title Here",
+  category: "Scientific Research", // Scientific Research, Educational Exhibit, or Case Report/Series
+  authors: "Dr. Author Name¹, Prof. Co-Author²",
+  affiliations: "¹Institution A, ²Institution B",
+  keywords: ["Keyword1", "Keyword2"],
+  imageUrl: "assets/posters/ABDA26-001.jpg", // Path to image file in your GitHub repository
+  background: "Background & Objectives details...",
+  methods: "Materials & Methods details...",
+  conclusion: "Conclusion details..."
+}</pre>
+                </div>
+
+                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
+                    <h4 class="font-bold text-slate-800 mb-1">Option B: Quick Live JSON Import (Instant Preview)</h4>
+                    <p class="text-slate-600 mb-2">Paste a valid JSON array of poster objects below to test live without editing code:</p>
+                    <textarea id="jsonImportInput" rows="5" class="w-full p-3 font-mono text-[11px] bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder='[ { "id": "ABDA26-001", "title": "Example Title", "category": "Scientific Research", "authors": "Author Name", "affiliations": "Hospital KL", "keywords": ["Breast Cancer"], "imageUrl": "", "background": "...", "methods": "...", "conclusion": "..." } ]'></textarea>
+                    <button onclick="importJSONData()" class="mt-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate-right"></i> Load JSON into Portal
+                    </button>
+                </div>
+            </div>
+
+            <div class="mt-6 text-right border-t border-slate-200 pt-4">
+                <button onclick="closeBatchImporterModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition">Close Importer</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const CATEGORIES = [
+            "Scientific Research",
+            "Educational Exhibit",
+            "Case Report/Series"
+        ];
+
+        // Sample / Placeholder list of submitted e-posters (Up to 60 slots ready)
+        // Simply replace the objects in this array with your actual submitted abstracts & posters.
+        const RAW_SUBMITTED_POSTERS = [
+            {
+                id: "ABDA26-001",
+                title: "Contrast-Enhanced Spectral Mammography (CESM) vs MRI in Neoadjuvant Chemotherapy Response Evaluation: A Multicenter Asian Cohort",
+                category: "Scientific Research",
+                authors: "Dr. Mei-Ling Tan¹, Dr. Rajiv Kumar², Prof. S. H. Wong³",
+                affiliations: "¹Department of Diagnostic Radiology, UMMC; ²College of Radiology AMM; ³National Cancer Centre Singapore",
+                keywords: ["CESM", "Breast MRI", "Neoadjuvant Chemotherapy", "Radiology"],
+                imageUrl: "", // Insert image path here e.g. "assets/posters/ABDA26-001.jpg"
+                background: "Accurate assessment of residual tumor size following Neoadjuvant Chemotherapy (NAC) is critical for surgical planning in locally advanced breast cancer.",
+                methods: "A prospective study across 4 Asian tertiary centers evaluating 185 HER2+ and TNBC patients pre- and post-NAC.",
+                conclusion: "CESM demonstrated non-inferior sensitivity and superior specificity compared to breast MRI, proving to be a highly viable cost-effective alternative."
+            },
+            {
+                id: "ABDA26-002",
+                title: "De-escalation Strategies in HER2-Positive Early Breast Cancer: 5-Year Survival Outcomes from Southeast Asia Breast Registry",
+                category: "Scientific Research",
+                authors: "Dr. Kenji Sato¹, Dr. Nurul Huda Salleh², Dr. Evelyn Lim³",
+                affiliations: "¹Division of Medical Oncology, Hospital KL; ²Institut Kanser Negara; ³Singapore General Hospital",
+                keywords: ["HER2+", "Trastuzumab", "De-escalation", "Survival Outcomes"],
+                imageUrl: "",
+                background: "Standard dual HER2 blockades and intensive chemotherapy regimens incur substantial cardiac toxicity and financial toxicity.",
+                methods: "Retrospective propensity-score matched analysis of 420 patients from SEABR receiving Paclitaxel + Trastuzumab vs ACT-Trastuzumab.",
+                conclusion: "De-escalated therapy achieved 96.4% 5-year DFS with zero Grade 3/4 cardiac dysfunctions, supporting safer treatment options."
+            },
+            {
+                id: "ABDA26-003",
+                title: "Oncoplastic Breast-Conserving Surgery in Dense Breast Tissue: Technique Refinements and Aesthetic Outcomes in Asian Women",
+                category: "Educational Exhibit",
+                authors: "Prof. Farida Ithnin¹, Dr. Chen Wei Sung², Dr. S. Ramanathan¹",
+                affiliations: "¹Surgical Oncology Unit, UPM Teaching Hospital; ²Division of Breast Surgery, Taiwan University Hospital",
+                keywords: ["Oncoplastic Surgery", "Dense Breast", "Cosmesis", "Resection Margin"],
+                imageUrl: "",
+                background: "Asian women frequently present with small-to-moderate volume, highly dense breasts, presenting technical challenges for achieving clear margins.",
+                methods: "Evaluation of 112 patients undergoing volume displacement vs volume replacement techniques. Pre- and post-op aesthetic scores were measured.",
+                conclusion: "Level II oncoplastic techniques achieved 98.2% clear margins on first excision with high patient satisfaction."
+            },
+            {
+                id: "ABDA26-004",
+                title: "AI-Assisted Digital Pathology for Automated Tumor-Infiltrating Lymphocytes (TILs) Scoring in Triple-Negative Breast Carcinoma",
+                category: "Scientific Research",
+                authors: "Dr. Aris Thorne¹, Dr. Siti Rahmah², Prof. K. Y. Cho³",
+                affiliations: "¹Department of Pathology, UKM; ²Pathology Asia Diagnostics; ³Seoul National University",
+                keywords: ["AI Pathology", "TILs", "TNBC", "Deep Learning"],
+                imageUrl: "",
+                background: "Stromal Tumor-Infiltrating Lymphocytes (sTILs) serve as a critical prognostic biomarker in TNBC.",
+                methods: "A deep learning ResNet-50 CNN model was trained on 1,200 digitized whole slide images annotated by international breast pathologists.",
+                conclusion: "The AI platform achieved an ICC of 0.91 against consensus expert scoring, reducing slide review time by 65%."
+            },
+            {
+                id: "ABDA26-005",
+                title: "Hypofractionated Whole Breast Irradiation with Simultaneous Integrated Boost (SIB) in Asian Women: Acute Toxicity Profile",
+                category: "Educational Exhibit",
+                authors: "Dr. Jonathan Lee¹, Dr. Priya Sundram², Dr. M. B. Hashim¹",
+                affiliations: "¹Department of Radiotherapy & Oncology, Hospital Beacon; ²Subang Jaya Medical Centre",
+                keywords: ["Radiotherapy", "Hypofractionation", "SIB", "Radiation Dermatitis"],
+                imageUrl: "",
+                background: "Accelerated 3-week hypofractionated radiotherapy regimens offer immense logistical convenience.",
+                methods: "Prospective trial of 150 early-stage breast cancer patients receiving 40.05 Gy in 15 fractions with SIB of 48 Gy to tumor bed.",
+                conclusion: "Grade 2 dermatitis occurred in only 12% of patients with zero Grade 3+ events, confirming excellent acute tolerability."
+            },
+            {
+                id: "ABDA26-006",
+                title: "A Rare Presentation of Metaplastic Breast Carcinoma with Squamous Differentiation: Diagnostic Pitfalls and Management",
+                category: "Case Report/Series",
+                authors: "Nurse Specialist Sarah Othman¹, Dr. Grace Lim², Puan Rohana Kassim¹",
+                affiliations: "¹Breast Care Centre, Penang General Hospital; ²Academy of Nursing Sciences Malaysia",
+                keywords: ["Metaplastic Carcinoma", "Squamous Differentiation", "Case Report"],
+                imageUrl: "",
+                background: "Metaplastic breast carcinoma is an aggressive, heterogeneous entity accounting for <1% of invasive breast malignancies.",
+                methods: "Detailed case report and literature review of a 54-year-old female presenting with a rapidly enlarging mass.",
+                conclusion: "High index of suspicion and complete panel immunohistochemistry (p63, CK5/6) are critical for accurate diagnosis."
+            }
+        ];
+
+        // Generate full 60-poster structure ready for user customization
+        const POSTER_DATABASE = Array.from({ length: 60 }, (_, i) => {
+            const num = i + 1;
+            const idStr = `ABDA26-${String(num).padStart(3, '0')}`;
+            const seed = RAW_SUBMITTED_POSTERS[i % RAW_SUBMITTED_POSTERS.length];
+            const cat = CATEGORIES[i % CATEGORIES.length];
+
+            const topics = [
+                "Microcalcification Characterization via Abbreviated DCE-MRI",
+                "Neoadjuvant Immunotherapy Combinations in Locally Advanced TNBC",
+                "Robotic-Assisted Nipple-Sparing Mastectomy: Asian Single-Center Audit",
+                "Liquid Biopsy ctDNA Monitoring for Minimal Residual Disease in Luminal B Breast Cancer",
+                "Deep Learning Automated Breast Density Classification on Digital Mammograms",
+                "Cardiotoxicity Monitoring in Trastuzumab-Deruxtecan Treatment Cohorts",
+                "Axillary Reverse Mapping (ARM) to Prevent Postoperative Lymphedema",
+                "Intraoperative Radiotherapy (IORT) in Low-Risk Early Breast Cancer",
+                "Financial Toxicity and Care Navigation among Rural Breast Cancer Survivors",
+                "PIK3CA Somatic Mutation Profiles in Hormone-Receptor Positive Asian Tumors"
+            ];
+
+            const topicName = topics[i % topics.length];
+
+            return {
+                id: idStr,
+                title: i < RAW_SUBMITTED_POSTERS.length ? seed.title : `${topicName}: Multicenter Evaluation (Poster #${num})`,
+                category: i < RAW_SUBMITTED_POSTERS.length ? seed.category : cat,
+                authors: seed.authors,
+                affiliations: seed.affiliations,
+                keywords: [...seed.keywords, `ABDA2026-${num}`],
+                imageUrl: seed.imageUrl || "", // User can insert image relative path here
+                likes: 12 + ((num * 7) % 55),
+                views: 120 + ((num * 23) % 400),
+                background: `${seed.background} [Submitted for presentation at ABDA 2026, The Vertical, CCEC, KL].`,
+                methods: `${seed.methods} Data collected and audited under standardized institutional protocols.`,
+                conclusion: `${seed.conclusion} Clinical findings support evidence-based management in Asian healthcare networks.`,
+                comments: []
+            };
+        });
+
+        // Global Application State
+        let currentPosters = [...POSTER_DATABASE];
+        let bookmarks = new Set(JSON.parse(localStorage.getItem('abda2026_bookmarks') || '[]'));
+        let likesMap = JSON.parse(localStorage.getItem('abda2026_likes') || '{}');
+        let currentCategory = 'ALL';
+        let currentSearchQuery = '';
+        let viewMode = 'grid'; // 'grid' or 'list'
+        let activePoster = null;
+        let zoomScale = 1.0;
+        let ttsUtterance = null;
+
+        // Initialize state likes
+        POSTER_DATABASE.forEach(p => {
+            if (likesMap[p.id]) {
+                p.likes = likesMap[p.id];
+            }
+        });
+
+        // DOM Load Initialization
+        window.addEventListener('DOMContentLoaded', () => {
+            updateBookmarkCounter();
+            renderPosterGallery();
+            setupCanvasPanZoom();
+        });
+
+        function renderPosterGallery() {
+            const gridContainer = document.getElementById('posterGrid');
+            const noResults = document.getElementById('noResults');
+            gridContainer.innerHTML = '';
+
+            if (currentPosters.length === 0) {
+                noResults.classList.remove('hidden');
+                return;
+            } else {
+                noResults.classList.add('hidden');
+            }
+
+            if (viewMode === 'grid') {
+                gridContainer.className = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6";
+            } else {
+                gridContainer.className = "flex flex-col gap-4";
+            }
+
+            currentPosters.forEach(poster => {
+                const isBookmarked = bookmarks.has(poster.id);
+
+                if (viewMode === 'grid') {
+                    const card = document.createElement('div');
+                    card.className = "bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col overflow-hidden group hover:-translate-y-1";
+                    
+                    card.innerHTML = `
+                        <!-- Card Image Header / Simulated Canvas Thumbnail -->
+                        <div class="relative bg-slate-900 h-44 overflow-hidden flex items-center justify-center cursor-pointer border-b border-slate-100" onclick="openPosterModal('${poster.id}')">
+                            <!-- Visual Graphic Mockup inside poster preview -->
+                            <div class="absolute inset-0 bg-gradient-to-br from-sky-900 via-slate-900 to-indigo-950 p-3 flex flex-col justify-between text-white opacity-90 group-hover:scale-105 transition duration-500">
+                                <div>
+                                    <div class="flex items-center justify-between text-[10px] text-sky-300 font-bold mb-1">
+                                        <span class="bg-sky-500/20 px-2 py-0.5 rounded border border-sky-400/30">${poster.id}</span>
+                                    </div>
+                                    <h4 class="text-xs font-bold leading-tight line-clamp-3 text-slate-100">${poster.title}</h4>
+                                </div>
+                                <div class="text-[9px] text-slate-300 line-clamp-2 italic border-t border-white/10 pt-1.5">
+                                    ${poster.authors}
+                                </div>
+                            </div>
+
+                            <!-- Overlay Hover Icon -->
+                            <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white gap-2">
+                                <span class="bg-pink-600 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
+                                    <i class="fa-solid fa-expand"></i> View Poster
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-4 flex-1 flex flex-col justify-between">
+                            <div>
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-sky-700 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100">
+                                        ${poster.category}
+                                    </span>
+                                    <button onclick="toggleBookmark(event, '${poster.id}')" class="text-slate-400 hover:text-pink-500 transition p-1">
+                                        <i class="${isBookmarked ? 'fa-solid text-pink-500' : 'fa-regular'} fa-heart text-sm"></i>
+                                    </button>
+                                </div>
+
+                                <h3 onclick="openPosterModal('${poster.id}')" class="text-xs font-bold text-slate-800 hover:text-sky-600 transition line-clamp-2 cursor-pointer leading-snug">
+                                    ${poster.title}
+                                </h3>
+
+                                <p class="text-[11px] text-slate-500 mt-1.5 line-clamp-1 font-medium">
+                                    ${poster.authors}
+                                </p>
+                            </div>
+
+                            <!-- Card Footer stats -->
+                            <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
+                                <div class="flex items-center space-x-3">
+                                    <span title="Likes"><i class="fa-solid fa-thumbs-up text-pink-500 mr-1"></i>${poster.likes}</span>
+                                    <span title="Views"><i class="fa-solid fa-eye text-sky-500 mr-1"></i>${poster.views}</span>
+                                </div>
+                                <button onclick="openPosterModal('${poster.id}')" class="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1">
+                                    Open <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                    gridContainer.appendChild(card);
+
+                } else {
+                    // List View rendering
+                    const row = document.createElement('div');
+                    row.className = "bg-white rounded-xl border border-slate-200 p-4 shadow-xs hover:shadow-md transition flex flex-col sm:flex-row sm:items-center justify-between gap-4";
+                    row.innerHTML = `
+                        <div class="flex items-start gap-4 flex-1">
+                            <span class="bg-slate-900 text-sky-400 font-mono text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-800 flex-shrink-0">
+                                ${poster.id}
+                            </span>
+                            <div class="flex-1">
+                                <div class="flex flex-wrap items-center gap-2 mb-1">
+                                    <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-100">${poster.category}</span>
+                                </div>
+                                <h3 onclick="openPosterModal('${poster.id}')" class="text-sm font-bold text-slate-800 hover:text-sky-600 cursor-pointer">
+                                    ${poster.title}
+                                </h3>
+                                <p class="text-xs text-slate-500 mt-0.5">${poster.authors} — <span class="italic text-slate-400">${poster.affiliations}</span></p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-3 sm:border-l sm:border-slate-200 sm:pl-4">
+                            <button onclick="toggleBookmark(event, '${poster.id}')" class="p-2 text-slate-400 hover:text-pink-500">
+                                <i class="${isBookmarked ? 'fa-solid text-pink-500' : 'fa-regular'} fa-heart text-base"></i>
+                            </button>
+                            <button onclick="openPosterModal('${poster.id}')" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition whitespace-nowrap">
+                                View Poster
+                            </button>
+                        </div>
+                    `;
+                    gridContainer.appendChild(row);
+                }
+            });
+
+            document.getElementById('totalPosterCount').innerText = currentPosters.length;
+        }
+
+        function applyFilters() {
+            const category = document.getElementById('categorySelect').value;
+            const sort = document.getElementById('sortSelect').value;
+            
+            let list = [...POSTER_DATABASE];
+
+            // Search Query Filter
+            if (currentSearchQuery.trim() !== '') {
+                const q = currentSearchQuery.toLowerCase();
+                list = list.filter(p => 
+                    p.title.toLowerCase().includes(q) ||
+                    p.authors.toLowerCase().includes(q) ||
+                    p.id.toLowerCase().includes(q) ||
+                    p.keywords.some(k => k.toLowerCase().includes(q)) ||
+                    p.background.toLowerCase().includes(q)
+                );
+            }
+
+            // Category Filter
+            if (category !== 'ALL') {
+                list = list.filter(p => p.category === category);
+            }
+
+            // Sort Engine
+            if (sort === 'id-asc') {
+                list.sort((a,b) => a.id.localeCompare(b.id));
+            } else if (sort === 'votes-desc') {
+                list.sort((a,b) => b.likes - a.likes);
+            } else if (sort === 'views-desc') {
+                list.sort((a,b) => b.views - a.views);
+            } else if (sort === 'title-asc') {
+                list.sort((a,b) => a.title.localeCompare(b.title));
+            }
+
+            currentPosters = list;
+            renderPosterGallery();
+        }
+
+        function setCategoryFilter(cat) {
+            currentCategory = cat;
+            document.getElementById('categorySelect').value = cat;
+
+            // Highlight buttons
+            document.querySelectorAll('#categoryBadges button').forEach(btn => {
+                if (btn.innerText.includes(cat) || (cat==='ALL' && btn.innerText.includes('All Posters'))) {
+                    btn.className = "category-btn active border px-3 py-1.5 rounded-full whitespace-nowrap bg-sky-600 text-white border-sky-600 font-semibold shadow-xs";
+                } else {
+                    btn.className = "category-btn border px-3 py-1.5 rounded-full whitespace-nowrap bg-slate-50 text-slate-700 border-slate-300 hover:bg-slate-100";
+                }
+            });
+
+            applyFilters();
+        }
+
+        function handleSearch() {
+            const val = document.getElementById('searchInput').value;
+            currentSearchQuery = val;
+            const clearBtn = document.getElementById('clearSearchBtn');
+            if (val.length > 0) clearBtn.classList.remove('hidden');
+            else clearBtn.classList.add('hidden');
+            applyFilters();
+        }
+
+        function clearSearch() {
+            document.getElementById('searchInput').value = '';
+            handleSearch();
+        }
+
+        function resetAllFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('categorySelect').value = 'ALL';
+            document.getElementById('sortSelect').value = 'id-asc';
+            currentSearchQuery = '';
+            setCategoryFilter('ALL');
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            const gridBtn = document.getElementById('gridViewBtn');
+            const listBtn = document.getElementById('listViewBtn');
+
+            if (mode === 'grid') {
+                gridBtn.className = "p-2 text-xs rounded-lg bg-white shadow-xs text-sky-600 font-bold transition";
+                listBtn.className = "p-2 text-xs rounded-lg text-slate-500 hover:text-slate-800 transition";
+            } else {
+                listBtn.className = "p-2 text-xs rounded-lg bg-white shadow-xs text-sky-600 font-bold transition";
+                gridBtn.className = "p-2 text-xs rounded-lg text-slate-500 hover:text-slate-800 transition";
+            }
+            renderPosterGallery();
+        }
+
+        function toggleBookmark(event, posterId) {
+            if(event) event.stopPropagation();
+            if (bookmarks.has(posterId)) {
+                bookmarks.delete(posterId);
+            } else {
+                bookmarks.add(posterId);
+            }
+            localStorage.setItem('abda2026_bookmarks', JSON.stringify([...bookmarks]));
+            updateBookmarkCounter();
+            renderPosterGallery();
+            if (activePoster && activePoster.id === posterId) {
+                updateModalBookmarkBtn();
+            }
+        }
+
+        function filterBookmarks() {
+            if (bookmarks.size === 0) {
+                alert('No posters bookmarked yet! Click the heart icon on any poster to bookmark it.');
+                return;
+            }
+            currentPosters = POSTER_DATABASE.filter(p => bookmarks.has(p.id));
+            renderPosterGallery();
+        }
+
+        function updateBookmarkCounter() {
+            document.getElementById('bookmarkCount').innerText = bookmarks.size;
+        }
+
+        function openPosterModal(posterId) {
+            const poster = POSTER_DATABASE.find(p => p.id === posterId);
+            if (!poster) return;
+
+            activePoster = poster;
+            poster.views++; // increment view count
+
+            // Populate Modal UI Fields
+            document.getElementById('modalPosterId').innerText = poster.id;
+            document.getElementById('modalPosterTitle').innerText = poster.title;
+            document.getElementById('modalCategoryBadge').innerText = poster.category;
+            document.getElementById('modalAuthors').innerText = poster.authors;
+            document.getElementById('modalAffiliations').innerText = poster.affiliations;
+            document.getElementById('modalBackground').innerText = poster.background;
+            document.getElementById('modalMethods').innerText = poster.methods;
+            document.getElementById('modalConclusion').innerText = poster.conclusion;
+            document.getElementById('modalLikeCount').innerText = poster.likes;
+
+            // Render Keywords
+            const kwContainer = document.getElementById('modalKeywords');
+            kwContainer.innerHTML = poster.keywords.map(k => `<span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[10px] font-medium border border-slate-200">#${k}</span>`).join('');
+
+            updateModalBookmarkBtn();
+            renderCommentsList();
+
+            // Render Scientific Canvas Poster
+            renderPosterCanvas(poster);
+
+            document.getElementById('posterModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePosterModal() {
+            stopAudioWalkthrough();
+            document.getElementById('posterModal').classList.add('hidden');
+            document.body.style.overflow = '';
+            activePoster = null;
+            resetPosterZoom();
+        }
+
+        function updateModalBookmarkBtn() {
+            const btn = document.getElementById('modalBookmarkBtn');
+            if (activePoster && bookmarks.has(activePoster.id)) {
+                btn.innerHTML = `<i class="fa-solid fa-heart text-pink-500 text-base"></i>`;
+            } else {
+                btn.innerHTML = `<i class="fa-regular fa-heart text-slate-300 text-base"></i>`;
+            }
+        }
+
+        function toggleModalBookmark() {
+            if (activePoster) {
+                toggleBookmark(null, activePoster.id);
+            }
+        }
+
+        function renderPosterCanvas(poster) {
+            const canvas = document.getElementById('posterCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Standard High Resolution Canvas Specs (A0 Scientific Aspect Ratio)
+            canvas.width = 1200;
+            canvas.height = 1600;
+
+            // Check if user provided an uploaded image file for this poster
+            if (poster.imageUrl && poster.imageUrl.trim() !== "") {
+                const img = new Image();
+                img.onload = function() {
+                    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                };
+                img.onerror = function() {
+                    drawFallbackCanvasPoster(ctx, canvas, poster);
+                };
+                img.src = poster.imageUrl;
+            } else {
+                drawFallbackCanvasPoster(ctx, canvas, poster);
+            }
+        }
+
+        function drawFallbackCanvasPoster(ctx, canvas, poster) {
+            // Background Fill
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Top Header Banner
+            const headerGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            headerGrad.addColorStop(0, '#0284c7');
+            headerGrad.addColorStop(0.5, '#0369a1');
+            headerGrad.addColorStop(1, '#1e1b4b');
+            ctx.fillStyle = headerGrad;
+            ctx.fillRect(0, 0, canvas.width, 220);
+
+            // Banner Bottom Accent Bar
+            ctx.fillStyle = '#ec4899';
+            ctx.fillRect(0, 215, canvas.width, 10);
+
+            // Header Text Block
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.fillText(`22nd ABDA ANNUAL SCIENTIFIC MEETING 2026  |  POSTER #${poster.id}`, 50, 45);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 30px Inter, sans-serif';
+            wrapCanvasText(ctx, poster.title, 50, 95, 1100, 38);
+
+            ctx.fillStyle = '#f0f9ff';
+            ctx.font = 'italic 18px Inter, sans-serif';
+            ctx.fillText(`${poster.authors} — ${poster.affiliations}`, 50, 195);
+
+            // Grid Section Boxes Layout
+            const padding = 40;
+            const colWidth = (canvas.width - (padding * 3)) / 2;
+
+            // Box 1: Background & Objectives (Left Column)
+            drawCanvasBox(ctx, 40, 250, colWidth, 380, "1. BACKGROUND & OBJECTIVES", poster.background, "#0284c7");
+
+            // Box 2: Methods & Materials (Left Column)
+            drawCanvasBox(ctx, 40, 650, colWidth, 420, "2. MATERIALS & METHODS", poster.methods, "#0284c7");
+
+            // Box 3: Simulated Results Visual Chart (Right Column)
+            drawCanvasChartBox(ctx, 40 + colWidth + padding, 250, colWidth, 420, "3. RESULTS & STATISTICAL DATA");
+
+            // Box 4: Conclusions (Right Column)
+            drawCanvasBox(ctx, 40 + colWidth + padding, 690, colWidth, 380, "4. CONCLUSION & CLINICAL IMPLICATIONS", poster.conclusion, "#ec4899");
+
+            // Box 5: Full Width References & Acknowledgments
+            ctx.fillStyle = '#f8fafc';
+            ctx.strokeStyle = '#e2e8f0';
+            ctx.lineWidth = 2;
+            ctx.fillRect(40, 1100, canvas.width - 80, 420);
+            ctx.strokeRect(40, 1100, canvas.width - 80, 420);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.fillText("5. KEY STUDY HIGHLIGHTS & REFERENCES", 60, 1140);
+
+            ctx.font = '16px Inter, sans-serif';
+            ctx.fillStyle = '#334155';
+            wrapCanvasText(ctx, `• Study conducted under ABDA 2026 Multidisciplinary Breast Cancer Protocol guidelines. \n• Ethical clearance obtained from Institutional Review Board (IRB-2025-8891).\n• References: 1. Asian Breast Disease Association Clinical Practice Manual (2025). 2. Malaysian Journal of Radiology (2026); 42:112-120.`, 60, 1180, 1080, 28);
+
+            // Footer Branding
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px Inter, sans-serif';
+            ctx.fillText("ABDA 2026 — The Vertical, Connexion Conference & Event Centre, Bangsar South, KL (19–20 Sept 2026)", 50, canvas.height - 20);
+        }
+
+        function drawCanvasBox(ctx, x, y, width, height, title, text, accentColor) {
+            ctx.fillStyle = '#ffffff';
+            ctx.shadowColor = 'rgba(0,0,0,0.05)';
+            ctx.shadowBlur = 10;
+            ctx.fillRect(x, y, width, height);
+            ctx.shadowBlur = 0;
+
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(x, y, width, height);
+
+            // Title Header Bar
+            ctx.fillStyle = accentColor;
+            ctx.fillRect(x, y, width, 45);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 18px Inter, sans-serif';
+            ctx.fillText(title, x + 20, y + 28);
+
+            // Content Text
+            ctx.fillStyle = '#1e293b';
+            ctx.font = '16px Inter, sans-serif';
+            wrapCanvasText(ctx, text, x + 20, y + 85, width - 40, 26);
+        }
+
+        function drawCanvasChartBox(ctx, x, y, width, height, title) {
+            drawCanvasBox(ctx, x, y, width, height, title, "", "#0284c7");
+
+            // Mock Data Chart Drawing inside box
+            const cx = x + 40;
+            const cy = y + 360;
+
+            // Axis Lines
+            ctx.strokeStyle = '#64748b';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, y + 90);
+            ctx.lineTo(cx, cy);
+            ctx.lineTo(x + width - 40, cy);
+            ctx.stroke();
+
+            // Bar Chart items
+            const bars = [
+                { label: 'Control', val: 180, color: '#38bdf8' },
+                { label: 'Cohort A', val: 240, color: '#0284c7' },
+                { label: 'Cohort B', val: 290, color: '#ec4899' }
+            ];
+
+            bars.forEach((b, idx) => {
+                const bx = cx + 50 + (idx * 100);
+                const bw = 50;
+                const bh = b.val;
+
+                ctx.fillStyle = b.color;
+                ctx.fillRect(bx, cy - bh, bw, bh);
+
+                ctx.fillStyle = '#0f172a';
+                ctx.font = '14px Inter, sans-serif';
+                ctx.fillText(b.label, bx, cy + 25);
+                ctx.fillText(`${b.val}`, bx + 10, cy - bh - 10);
+            });
+        }
+
+        function wrapCanvasText(ctx, text, x, y, maxWidth, lineHeight) {
+            const words = text.split(' ');
+            let line = '';
+            for (let n = 0; n < words.length; n++) {
+                let testLine = line + words[n] + ' ';
+                let metrics = ctx.measureText(testLine);
+                let testWidth = metrics.width;
+                if (testWidth > maxWidth && n > 0) {
+                    ctx.fillText(line, x, y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                } else {
+                    line = testLine;
+                }
+            }
+            ctx.fillText(line, x, y);
+        }
+
+        function setupCanvasPanZoom() {
+            const wrapper = document.getElementById('posterCanvasWrapper');
+            let isDragging = false;
+            let startX, startY, scrollLeft, scrollTop;
+
+            wrapper.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                startX = e.pageX - wrapper.offsetLeft;
+                startY = e.pageY - wrapper.offsetTop;
+                scrollLeft = wrapper.scrollLeft;
+                scrollTop = wrapper.scrollTop;
+            });
+
+            wrapper.addEventListener('mouseleave', () => isDragging = false);
+            wrapper.addEventListener('mouseup', () => isDragging = false);
+
+            wrapper.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                e.preventDefault();
+                const x = e.pageX - wrapper.offsetLeft;
+                const y = e.pageY - wrapper.offsetTop;
+                const walkX = (x - startX) * 1.5;
+                const walkY = (y - startY) * 1.5;
+                wrapper.scrollLeft = scrollLeft - walkX;
+                wrapper.scrollTop = scrollTop - walkY;
+            });
+        }
+
+        function zoomPoster(factor) {
+            zoomScale = Math.max(0.5, Math.min(2.5, zoomScale * factor));
+            const canvas = document.getElementById('posterCanvas');
+            canvas.style.transform = `scale(${zoomScale})`;
+            document.getElementById('zoomLevelDisplay').innerText = `${Math.round(zoomScale * 100)}%`;
+        }
+
+        function resetPosterZoom() {
+            zoomScale = 1.0;
+            const canvas = document.getElementById('posterCanvas');
+            canvas.style.transform = `scale(1)`;
+            document.getElementById('zoomLevelDisplay').innerText = `100%`;
+        }
+
+        function likeCurrentPoster() {
+            if (!activePoster) return;
+            activePoster.likes++;
+            likesMap[activePoster.id] = activePoster.likes;
+            localStorage.setItem('abda2026_likes', JSON.stringify(likesMap));
+
+            document.getElementById('modalLikeCount').innerText = activePoster.likes;
+            renderPosterGallery();
+
+            // Trigger confetti effect
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 50,
+                    spread: 60,
+                    origin: { y: 0.8 }
+                });
+            }
+        }
+
+        function switchSidebarTab(tab) {
+            const abstractTab = document.getElementById('tabAbstractContent');
+            const commentsTab = document.getElementById('tabCommentsContent');
+            const btnAbs = document.getElementById('tabAbstractBtn');
+            const btnCom = document.getElementById('tabCommentsBtn');
+
+            if (tab === 'abstract') {
+                abstractTab.classList.remove('hidden');
+                commentsTab.classList.add('hidden');
+                btnAbs.className = "flex-1 py-3 text-xs font-bold text-sky-600 border-b-2 border-sky-600 transition";
+                btnCom.className = "flex-1 py-3 text-xs font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition";
+            } else {
+                abstractTab.classList.add('hidden');
+                commentsTab.classList.remove('hidden');
+                btnCom.className = "flex-1 py-3 text-xs font-bold text-sky-600 border-b-2 border-sky-600 transition";
+                btnAbs.className = "flex-1 py-3 text-xs font-bold text-slate-500 hover:text-slate-800 border-b-2 border-transparent transition";
+            }
+        }
+
+        function renderCommentsList() {
+            if (!activePoster) return;
+            const container = document.getElementById('commentsList');
+            document.getElementById('commentCountBadge').innerText = activePoster.comments.length;
+
+            if (activePoster.comments.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-slate-400">
+                        <i class="fa-regular fa-comments text-2xl mb-1"></i>
+                        <p class="text-xs">No questions yet. Be the first to ask!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = activePoster.comments.map(c => `
+                <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+                    <div class="flex items-center justify-between font-bold text-slate-800 text-[11px]">
+                        <span>${c.name}</span>
+                        <span class="text-[10px] text-slate-400 font-normal">${c.time}</span>
+                    </div>
+                    <p class="text-slate-600 mt-1 leading-relaxed">${c.text}</p>
+                </div>
+            `).join('');
+        }
+
+        function addComment() {
+            const nameInput = document.getElementById('commenterName');
+            const textInput = document.getElementById('commentText');
+
+            if (!textInput.value.trim()) return;
+
+            const newComment = {
+                name: nameInput.value.trim() || 'Anonymous Delegate',
+                text: textInput.value.trim(),
+                time: 'Just now'
+            };
+
+            activePoster.comments.push(newComment);
+            textInput.value = '';
+            renderCommentsList();
+        }
+
+        function toggleAudioWalkthrough() {
+            if (!activePoster) return;
+
+            if (window.speechSynthesis.speaking) {
+                stopAudioWalkthrough();
+                return;
+            }
+
+            const textToRead = `Title: ${activePoster.title}. Authors: ${activePoster.authors}. Background: ${activePoster.background}. Conclusion: ${activePoster.conclusion}`;
+            
+            ttsUtterance = new SpeechSynthesisUtterance(textToRead);
+            ttsUtterance.rate = 0.95;
+            
+            ttsUtterance.onstart = () => {
+                document.getElementById('ttsProgressContainer').classList.remove('hidden');
+                document.getElementById('ttsIcon').className = "fa-solid fa-volume-xmark text-pink-400";
+            };
+
+            ttsUtterance.onend = () => {
+                stopAudioWalkthrough();
+            };
+
+            window.speechSynthesis.speak(ttsUtterance);
+        }
+
+        function stopAudioWalkthrough() {
+            if (window.speechSynthesis) {
+                window.speechSynthesis.cancel();
+            }
+            const prog = document.getElementById('ttsProgressContainer');
+            if (prog) prog.classList.add('hidden');
+            const icon = document.getElementById('ttsIcon');
+            if (icon) icon.className = "fa-solid fa-volume-high text-sky-400";
+        }
+
+        function copyCitation() {
+            if (!activePoster) return;
+            const citation = `${activePoster.authors}. (2026). ${activePoster.title}. 22nd Asian Breast Disease Association (ABDA) Annual Scientific Meeting, 19–20 September 2026, The Vertical, Connexion Conference & Event Centre, Bangsar South, Kuala Lumpur. Poster ID: ${activePoster.id}.`;
+            
+            navigator.clipboard.writeText(citation).then(() => {
+                alert('Citation copied to clipboard!');
+            }).catch(() => {
+                const textarea = document.createElement('textarea');
+                textarea.value = citation;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                alert('Citation copied!');
+            });
+        }
+
+        function toggleKioskMode() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => alert(`Error enabling fullscreen: ${err.message}`));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function toggleModalFullscreen() {
+            const modalElem = document.getElementById('posterModal');
+            if (!document.fullscreenElement) {
+                modalElem.requestFullscreen().catch(err => console.log(err));
+            } else {
+                document.exitFullscreen();
+            }
+        }
+
+        function openGitHubGuideModal() {
+            document.getElementById('githubGuideModal').classList.remove('hidden');
+        }
+
+        function closeGitHubGuideModal() {
+            document.getElementById('githubGuideModal').classList.add('hidden');
+        }
+
+        function openBatchImporterModal() {
+            document.getElementById('batchImporterModal').classList.remove('hidden');
+        }
+
+        function closeBatchImporterModal() {
+            document.getElementById('batchImporterModal').classList.add('hidden');
+        }
+
+        function importJSONData() {
+            const jsonText = document.getElementById('jsonImportInput').value.trim();
+            if (!jsonText) return;
+
+            try {
+                const parsed = JSON.parse(jsonText);
+                if (Array.isArray(parsed)) {
+                    parsed.forEach((item, idx) => {
+                        const targetIndex = POSTER_DATABASE.findIndex(p => p.id === item.id);
+                        if (targetIndex !== -1) {
+                            POSTER_DATABASE[targetIndex] = { ...POSTER_DATABASE[targetIndex], ...item };
+                        } else {
+                            POSTER_DATABASE.push({
+                                likes: 0,
+                                views: 0,
+                                comments: [],
+                                ...item
+                            });
+                        }
+                    });
+                    currentPosters = [...POSTER_DATABASE];
+                    renderPosterGallery();
+                    closeBatchImporterModal();
+                    alert(`Successfully imported ${parsed.length} poster(s)!`);
+                } else {
+                    alert('Invalid format: Input must be a JSON array of objects.');
+                }
+            } catch (err) {
+                alert(`JSON Parsing Error: ${err.message}`);
+            }
+        }
+    </script>
+</body>
+</html>
