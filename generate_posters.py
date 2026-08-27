@@ -22,7 +22,7 @@ def parse_csv_to_posters(csv_path):
     """
     Reads posters.csv and maps columns to the ABDA 2026 JSON schema.
     Expected CSV Column Headers:
-    ID, Title, Category, Authors, Affiliations, Keywords, ImageUrl, Background, Methods, Conclusion
+    ID, Title, Category, Authors, Affiliations, Keywords, ImageUrl, Background, Methods/Results, Conclusion
     """
     posters = []
     
@@ -45,7 +45,7 @@ def parse_csv_to_posters(csv_path):
                     "keywords": keywords,
                     "imageUrl": row.get('ImageUrl', '').strip(),
                     "background": row.get('Background', '').strip(),
-                    "methods": row.get('Methods', '').strip(),
+                    "methods/results": row.get('Methods', '').strip(),
                     "conclusion": row.get('Conclusion', '').strip()
                 }
                 
