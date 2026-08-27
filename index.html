@@ -154,7 +154,7 @@
             <!-- Live Gallery Counters -->
             <div class="flex items-center space-x-4 ml-auto">
                 <span class="bg-slate-800 text-sky-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono">
-                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">60</span> Posters
+                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">56</span> Posters
                 </span>
                 <button onclick="filterBookmarks()" id="bookmarkFilterBtn" class="bg-slate-800 hover:bg-slate-700 text-pink-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono transition flex items-center gap-1.5">
                     <i class="fa-solid fa-heart text-xs text-pink-500"></i>
@@ -462,11 +462,11 @@
                     <pre class="bg-slate-900 text-sky-300 p-3 rounded-lg mt-2 overflow-x-auto text-[11px]">
 {
   id: "ABDA26-001",
-  title: "MEDICAL PHYSICS–LED STRATIFIED DOSE OPTIMIZATION BENCHMARKS FOR DIGITAL BREAST TOMOSYNTHESIS: SUPPORTING MULTIDISCIPLINARY BREAST CARE",
+  title: "Your Submitted Poster Title Here",
   category: "Scientific Research", // Scientific Research, Educational Exhibit, or Case Report/Series
-  authors: "Nur Erina Ismail¹, Nur Ashmira Aznan², Zahurin Ismail¹²",
-  affiliations: "¹ Hospital Putrajaya, Wilayah Persekutuan Putrajaya, Malaysia, 2 Medical Radiation Surveillance Division, Ministry of Health, Malaysia",
-  keywords: [Digital breast tomosynthesis; Medical physics; Dose optimization; Mean glandular dose; Quality improvement],
+  authors: "Dr. Author Name¹, Prof. Co-Author²",
+  affiliations: "¹Institution A, ²Institution B",
+  keywords: ["Keyword1", "Keyword2"],
   imageUrl: "assets/posters/ABDA26-001.jpg", // Path to image file in your GitHub repository
   background: "Background & Objectives details...",
   methods: "Materials & Methods details...",
@@ -519,8 +519,8 @@
             */
         ];
 
-        // Generate 60 standardized template slots (Overridden when RAW_SUBMITTED_POSTERS are populated)
-        const POSTER_DATABASE = Array.from({ length: 60 }, (_, i) => {
+        // Generate 56 standardized template slots (Overridden when RAW_SUBMITTED_POSTERS are populated)
+        const POSTER_DATABASE = Array.from({ length: 56 }, (_, i) => {
             const num = i + 1;
             const idStr = `ABDA26-${String(num).padStart(3, '0')}`;
             const submitted = RAW_SUBMITTED_POSTERS.find(p => p.id === idStr) || RAW_SUBMITTED_POSTERS[i];
