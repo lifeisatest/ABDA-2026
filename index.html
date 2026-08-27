@@ -497,118 +497,67 @@
             "Case Report/Series"
         ];
 
-        // Sample / Placeholder list of submitted e-posters (Up to 60 slots ready)
-        // Simply replace the objects in this array with your actual submitted abstracts & posters.
+        // =========================================================================
+        // SUBMITTED E-POSTERS DATA ARRAY
+        // When authors submit their e-posters, add or paste their objects into this array.
+        // Any slot defined here will automatically replace the corresponding template slot.
+        // =========================================================================
         const RAW_SUBMITTED_POSTERS = [
+            /* EXAMPLE OF HOW TO ADD A SUBMITTED POSTER:
             {
                 id: "ABDA26-001",
-                title: "Contrast-Enhanced Spectral Mammography (CESM) vs MRI in Neoadjuvant Chemotherapy Response Evaluation: A Multicenter Asian Cohort",
-                category: "Scientific Research",
-                authors: "Dr. Mei-Ling Tan¹, Dr. Rajiv Kumar², Prof. S. H. Wong³",
-                affiliations: "¹Department of Diagnostic Radiology, UMMC; ²College of Radiology AMM; ³National Cancer Centre Singapore",
-                keywords: ["CESM", "Breast MRI", "Neoadjuvant Chemotherapy", "Radiology"],
-                imageUrl: "", // Insert image path here e.g. "assets/posters/ABDA26-001.jpg"
-                background: "Accurate assessment of residual tumor size following Neoadjuvant Chemotherapy (NAC) is critical for surgical planning in locally advanced breast cancer.",
-                methods: "A prospective study across 4 Asian tertiary centers evaluating 185 HER2+ and TNBC patients pre- and post-NAC.",
-                conclusion: "CESM demonstrated non-inferior sensitivity and superior specificity compared to breast MRI, proving to be a highly viable cost-effective alternative."
-            },
-            {
-                id: "ABDA26-002",
-                title: "De-escalation Strategies in HER2-Positive Early Breast Cancer: 5-Year Survival Outcomes from Southeast Asia Breast Registry",
-                category: "Scientific Research",
-                authors: "Dr. Kenji Sato¹, Dr. Nurul Huda Salleh², Dr. Evelyn Lim³",
-                affiliations: "¹Division of Medical Oncology, Hospital KL; ²Institut Kanser Negara; ³Singapore General Hospital",
-                keywords: ["HER2+", "Trastuzumab", "De-escalation", "Survival Outcomes"],
-                imageUrl: "",
-                background: "Standard dual HER2 blockades and intensive chemotherapy regimens incur substantial cardiac toxicity and financial toxicity.",
-                methods: "Retrospective propensity-score matched analysis of 420 patients from SEABR receiving Paclitaxel + Trastuzumab vs ACT-Trastuzumab.",
-                conclusion: "De-escalated therapy achieved 96.4% 5-year DFS with zero Grade 3/4 cardiac dysfunctions, supporting safer treatment options."
-            },
-            {
-                id: "ABDA26-003",
-                title: "Oncoplastic Breast-Conserving Surgery in Dense Breast Tissue: Technique Refinements and Aesthetic Outcomes in Asian Women",
-                category: "Educational Exhibit",
-                authors: "Prof. Farida Ithnin¹, Dr. Chen Wei Sung², Dr. S. Ramanathan¹",
-                affiliations: "¹Surgical Oncology Unit, UPM Teaching Hospital; ²Division of Breast Surgery, Taiwan University Hospital",
-                keywords: ["Oncoplastic Surgery", "Dense Breast", "Cosmesis", "Resection Margin"],
-                imageUrl: "",
-                background: "Asian women frequently present with small-to-moderate volume, highly dense breasts, presenting technical challenges for achieving clear margins.",
-                methods: "Evaluation of 112 patients undergoing volume displacement vs volume replacement techniques. Pre- and post-op aesthetic scores were measured.",
-                conclusion: "Level II oncoplastic techniques achieved 98.2% clear margins on first excision with high patient satisfaction."
-            },
-            {
-                id: "ABDA26-004",
-                title: "AI-Assisted Digital Pathology for Automated Tumor-Infiltrating Lymphocytes (TILs) Scoring in Triple-Negative Breast Carcinoma",
-                category: "Scientific Research",
-                authors: "Dr. Aris Thorne¹, Dr. Siti Rahmah², Prof. K. Y. Cho³",
-                affiliations: "¹Department of Pathology, UKM; ²Pathology Asia Diagnostics; ³Seoul National University",
-                keywords: ["AI Pathology", "TILs", "TNBC", "Deep Learning"],
-                imageUrl: "",
-                background: "Stromal Tumor-Infiltrating Lymphocytes (sTILs) serve as a critical prognostic biomarker in TNBC.",
-                methods: "A deep learning ResNet-50 CNN model was trained on 1,200 digitized whole slide images annotated by international breast pathologists.",
-                conclusion: "The AI platform achieved an ICC of 0.91 against consensus expert scoring, reducing slide review time by 65%."
-            },
-            {
-                id: "ABDA26-005",
-                title: "Hypofractionated Whole Breast Irradiation with Simultaneous Integrated Boost (SIB) in Asian Women: Acute Toxicity Profile",
-                category: "Educational Exhibit",
-                authors: "Dr. Jonathan Lee¹, Dr. Priya Sundram², Dr. M. B. Hashim¹",
-                affiliations: "¹Department of Radiotherapy & Oncology, Hospital Beacon; ²Subang Jaya Medical Centre",
-                keywords: ["Radiotherapy", "Hypofractionation", "SIB", "Radiation Dermatitis"],
-                imageUrl: "",
-                background: "Accelerated 3-week hypofractionated radiotherapy regimens offer immense logistical convenience.",
-                methods: "Prospective trial of 150 early-stage breast cancer patients receiving 40.05 Gy in 15 fractions with SIB of 48 Gy to tumor bed.",
-                conclusion: "Grade 2 dermatitis occurred in only 12% of patients with zero Grade 3+ events, confirming excellent acute tolerability."
-            },
-            {
-                id: "ABDA26-006",
-                title: "A Rare Presentation of Metaplastic Breast Carcinoma with Squamous Differentiation: Diagnostic Pitfalls and Management",
-                category: "Case Report/Series",
-                authors: "Nurse Specialist Sarah Othman¹, Dr. Grace Lim², Puan Rohana Kassim¹",
-                affiliations: "¹Breast Care Centre, Penang General Hospital; ²Academy of Nursing Sciences Malaysia",
-                keywords: ["Metaplastic Carcinoma", "Squamous Differentiation", "Case Report"],
-                imageUrl: "",
-                background: "Metaplastic breast carcinoma is an aggressive, heterogeneous entity accounting for <1% of invasive breast malignancies.",
-                methods: "Detailed case report and literature review of a 54-year-old female presenting with a rapidly enlarging mass.",
-                conclusion: "High index of suspicion and complete panel immunohistochemistry (p63, CK5/6) are critical for accurate diagnosis."
+                title: "Your Submitted Poster Title Here",
+                category: "Scientific Research", // "Scientific Research", "Educational Exhibit", or "Case Report/Series"
+                authors: "Dr. Author Name¹, Prof. Co-Author²",
+                affiliations: "¹Institution A, ²Institution B",
+                keywords: ["Breast Cancer", "Radiology"],
+                imageUrl: "assets/posters/ABDA26-001.jpg", // Path to poster image in your repo (optional)
+                background: "Background & Objectives details...",
+                methods: "Materials & Methods details...",
+                conclusion: "Conclusion details..."
             }
+            */
         ];
 
-        // Generate full 60-poster structure ready for user customization
+        // Generate 60 standardized template slots (Overridden when RAW_SUBMITTED_POSTERS are populated)
         const POSTER_DATABASE = Array.from({ length: 60 }, (_, i) => {
             const num = i + 1;
             const idStr = `ABDA26-${String(num).padStart(3, '0')}`;
-            const seed = RAW_SUBMITTED_POSTERS[i % RAW_SUBMITTED_POSTERS.length];
+            const submitted = RAW_SUBMITTED_POSTERS.find(p => p.id === idStr) || RAW_SUBMITTED_POSTERS[i];
             const cat = CATEGORIES[i % CATEGORIES.length];
 
-            const topics = [
-                "Microcalcification Characterization via Abbreviated DCE-MRI",
-                "Neoadjuvant Immunotherapy Combinations in Locally Advanced TNBC",
-                "Robotic-Assisted Nipple-Sparing Mastectomy: Asian Single-Center Audit",
-                "Liquid Biopsy ctDNA Monitoring for Minimal Residual Disease in Luminal B Breast Cancer",
-                "Deep Learning Automated Breast Density Classification on Digital Mammograms",
-                "Cardiotoxicity Monitoring in Trastuzumab-Deruxtecan Treatment Cohorts",
-                "Axillary Reverse Mapping (ARM) to Prevent Postoperative Lymphedema",
-                "Intraoperative Radiotherapy (IORT) in Low-Risk Early Breast Cancer",
-                "Financial Toxicity and Care Navigation among Rural Breast Cancer Survivors",
-                "PIK3CA Somatic Mutation Profiles in Hormone-Receptor Positive Asian Tumors"
-            ];
+            if (submitted) {
+                return {
+                    id: submitted.id || idStr,
+                    title: submitted.title,
+                    category: submitted.category || cat,
+                    authors: submitted.authors || "Author(s) Pending",
+                    affiliations: submitted.affiliations || "Institution Pending",
+                    keywords: submitted.keywords || ["ABDA2026"],
+                    imageUrl: submitted.imageUrl || "",
+                    likes: submitted.likes || 0,
+                    views: submitted.views || 0,
+                    background: submitted.background || "Abstract background pending submission.",
+                    methods: submitted.methods || "Methods pending submission.",
+                    conclusion: submitted.conclusion || "Conclusion pending submission.",
+                    comments: submitted.comments || []
+                };
+            }
 
-            const topicName = topics[i % topics.length];
-
+            // Default Template Placeholder
             return {
                 id: idStr,
-                title: i < RAW_SUBMITTED_POSTERS.length ? seed.title : `${topicName}: Multicenter Evaluation (Poster #${num})`,
-                category: i < RAW_SUBMITTED_POSTERS.length ? seed.category : cat,
-                authors: seed.authors,
-                affiliations: seed.affiliations,
-                keywords: [...seed.keywords, `ABDA2026-${num}`],
-                imageUrl: seed.imageUrl || "", // User can insert image relative path here
-                likes: 12 + ((num * 7) % 55),
-                views: 120 + ((num * 23) % 400),
-                background: `${seed.background} [Submitted for presentation at ABDA 2026, The Vertical, CCEC, KL].`,
-                methods: `${seed.methods} Data collected and audited under standardized institutional protocols.`,
-                conclusion: `${seed.conclusion} Clinical findings support evidence-based management in Asian healthcare networks.`,
+                title: `[Template Slot ${idStr}] E-Poster Title Pending Submission`,
+                category: cat,
+                authors: "Author Name(s) — Pending Submission",
+                affiliations: "Institution / Department — Pending Submission",
+                keywords: ["Template", "Pending Submission", "ABDA2026"],
+                imageUrl: "", // User can add image path e.g. "assets/posters/ABDA26-001.jpg"
+                likes: 0,
+                views: 0,
+                background: "ABSTRACT BACKGROUND & OBJECTIVES: Content pending submission by authors. You can edit this slot by adding poster details into RAW_SUBMITTED_POSTERS inside index.html or importing via the 'Add/Import Posters' portal button.",
+                methods: "MATERIALS & METHODS: Study methodology pending submission.",
+                conclusion: "CONCLUSION & IMPLICATIONS: Clinical conclusions pending submission.",
                 comments: []
             };
         });
@@ -956,8 +905,10 @@
         }
 
         function drawFallbackCanvasPoster(ctx, canvas, poster) {
+            const isTemplate = poster.title.includes('[Template Slot');
+
             // Background Fill
-            ctx.fillStyle = '#ffffff';
+            ctx.fillStyle = isTemplate ? '#f8fafc' : '#ffffff';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
 
             // Top Header Banner
@@ -978,43 +929,58 @@
             ctx.fillText(`22nd ABDA ANNUAL SCIENTIFIC MEETING 2026  |  POSTER #${poster.id}`, 50, 45);
 
             ctx.fillStyle = '#ffffff';
-            ctx.font = 'bold 30px Inter, sans-serif';
+            ctx.font = 'bold 28px Inter, sans-serif';
             wrapCanvasText(ctx, poster.title, 50, 95, 1100, 38);
 
             ctx.fillStyle = '#f0f9ff';
             ctx.font = 'italic 18px Inter, sans-serif';
             ctx.fillText(`${poster.authors} — ${poster.affiliations}`, 50, 195);
 
+            // Watermark / Template Banner overlay if template slot
+            if (isTemplate) {
+                ctx.fillStyle = '#fef2f2';
+                ctx.strokeStyle = '#fca5a5';
+                ctx.lineWidth = 2;
+                ctx.fillRect(40, 240, canvas.width - 80, 50);
+                ctx.strokeRect(40, 240, canvas.width - 80, 50);
+
+                ctx.fillStyle = '#991b1b';
+                ctx.font = 'bold 16px Inter, sans-serif';
+                ctx.fillText('📌 E-POSTER TEMPLATE SLOT — AWAITING ABSTRACT & IMAGE SUBMISSION FROM AUTHOR', 60, 272);
+            }
+
             // Grid Section Boxes Layout
             const padding = 40;
             const colWidth = (canvas.width - (padding * 3)) / 2;
+            const startY = isTemplate ? 310 : 250;
 
             // Box 1: Background & Objectives (Left Column)
-            drawCanvasBox(ctx, 40, 250, colWidth, 380, "1. BACKGROUND & OBJECTIVES", poster.background, "#0284c7");
+            drawCanvasBox(ctx, 40, startY, colWidth, 360, "1. BACKGROUND & OBJECTIVES", poster.background, "#0284c7");
 
             // Box 2: Methods & Materials (Left Column)
-            drawCanvasBox(ctx, 40, 650, colWidth, 420, "2. MATERIALS & METHODS", poster.methods, "#0284c7");
+            drawCanvasBox(ctx, 40, startY + 380, colWidth, 400, "2. MATERIALS & METHODS", poster.methods, "#0284c7");
 
-            // Box 3: Simulated Results Visual Chart (Right Column)
-            drawCanvasChartBox(ctx, 40 + colWidth + padding, 250, colWidth, 420, "3. RESULTS & STATISTICAL DATA");
+            // Box 3: Results / Chart (Right Column)
+            drawCanvasChartBox(ctx, 40 + colWidth + padding, startY, colWidth, 400, "3. RESULTS & STATISTICAL DATA");
 
             // Box 4: Conclusions (Right Column)
-            drawCanvasBox(ctx, 40 + colWidth + padding, 690, colWidth, 380, "4. CONCLUSION & CLINICAL IMPLICATIONS", poster.conclusion, "#ec4899");
+            drawCanvasBox(ctx, 40 + colWidth + padding, startY + 420, colWidth, 360, "4. CONCLUSION & CLINICAL IMPLICATIONS", poster.conclusion, "#ec4899");
 
             // Box 5: Full Width References & Acknowledgments
-            ctx.fillStyle = '#f8fafc';
-            ctx.strokeStyle = '#e2e8f0';
+            const refY = startY + 800;
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#cbd5e1';
             ctx.lineWidth = 2;
-            ctx.fillRect(40, 1100, canvas.width - 80, 420);
-            ctx.strokeRect(40, 1100, canvas.width - 80, 420);
+            ctx.fillRect(40, refY, canvas.width - 80, 360);
+            ctx.strokeRect(40, refY, canvas.width - 80, 360);
 
             ctx.fillStyle = '#0f172a';
             ctx.font = 'bold 20px Inter, sans-serif';
-            ctx.fillText("5. KEY STUDY HIGHLIGHTS & REFERENCES", 60, 1140);
+            ctx.fillText("5. KEY STUDY HIGHLIGHTS & REFERENCES", 60, refY + 40);
 
             ctx.font = '16px Inter, sans-serif';
             ctx.fillStyle = '#334155';
-            wrapCanvasText(ctx, `• Study conducted under ABDA 2026 Multidisciplinary Breast Cancer Protocol guidelines. \n• Ethical clearance obtained from Institutional Review Board (IRB-2025-8891).\n• References: 1. Asian Breast Disease Association Clinical Practice Manual (2025). 2. Malaysian Journal of Radiology (2026); 42:112-120.`, 60, 1180, 1080, 28);
+            wrapCanvasText(ctx, `• ABDA 2026 Multidisciplinary Management Protocol guidelines.\n• Ethical clearance: IRB-2026-PENDING.\n• References: 1. Asian Breast Disease Association Manual (2026). 2. Malaysian Journal of Radiology (2026).`, 60, refY + 80, 1080, 28);
 
             // Footer Branding
             ctx.fillStyle = '#0f172a';
