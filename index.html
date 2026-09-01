@@ -32,9 +32,6 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Canvas Confetti for Voting Feedback -->
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-
     <style>
         /* Custom scrollbars & canvas zoom constraints */
         ::-webkit-scrollbar {
@@ -198,7 +195,6 @@
                     <!-- Sort Dropdown -->
                     <select id="sortSelect" onchange="applyFilters()" class="py-2.5 px-3 text-sm bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-sky-500 font-medium text-slate-700">
                         <option value="id-asc">Sort by: Poster ID</option>
-                        <option value="votes-desc">Sort by: Most Liked</option>
                         <option value="views-desc">Sort by: Most Viewed</option>
                         <option value="title-asc">Sort by: Title A-Z</option>
                     </select>
@@ -248,7 +244,7 @@
             <div class="bg-slate-900 text-white px-4 sm:px-6 py-3.5 flex items-center justify-between border-b border-slate-800">
                 <div class="flex items-center space-x-3 overflow-hidden pr-2">
                     <span id="modalPosterId" class="bg-pink-600 text-white text-xs font-black px-2.5 py-1 rounded-md tracking-wider">
-                        ABDA26-001
+                        AA-001
                     </span>
                     <span id="modalCategoryBadge" class="bg-sky-900 text-sky-200 text-xs font-semibold px-2.5 py-1 rounded-md hidden sm:inline-block">
                         Radiology
@@ -305,11 +301,6 @@
 
                         <div class="flex items-center space-x-3">
                             <span class="text-slate-400 text-[11px] hidden sm:inline"><i class="fa-solid fa-hand-pointer mr-1"></i>Drag to pan</span>
-                            <button onclick="likeCurrentPoster()" class="bg-pink-600 hover:bg-pink-500 text-white px-3 py-1 rounded-full text-xs font-bold transition flex items-center gap-1.5 shadow">
-                                <i class="fa-solid fa-thumbs-up"></i>
-                                <span>Like</span>
-                                <span id="modalLikeCount" class="bg-pink-800 px-1.5 py-0.2 rounded-full text-[10px]">0</span>
-                            </button>
                         </div>
                     </div>
 
@@ -452,6 +443,56 @@
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
+    <!-- GitHub Pages Setup Modal -->
+    <div id="githubGuideModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xl">
+                        <i class="fa-brands fa-github"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Deploying on GitHub Pages for ABDA 2026</h3>
+                        <p class="text-xs text-slate-500">Step-by-step instructions to launch this static website for free</p>
+                    </div>
+                </div>
+                <button onclick="closeGitHubGuideModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
+                <ol class="list-decimal list-inside space-y-2">
+                    <li>Push your code and <code class="bg-slate-100 px-1 py-0.5 rounded text-pink-600">index.html</code> to your GitHub repository (e.g., <code class="bg-slate-100 px-1 py-0.5 rounded text-sky-600">abda2026-eposters</code>).</li>
+                    <li>Go to repository <strong>Settings</strong> &rarr; <strong>Pages</strong>.</li>
+                    <li>Under <strong>Branch</strong>, select <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-bold">main</code> and keep the folder as <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-bold">/(root)</code>.</li>
+                    <li>Click <strong>Save</strong>. Your portal will be published online in 1–2 minutes!</li>
+                </ol>
+            </div>
+
+            <div class="mt-6 text-right border-t border-slate-200 pt-4">
+                <button onclick="closeGitHubGuideModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition">Got it!</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Batch Poster Importer Modal for Organizers -->
+    <div id="batchImporterModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 border border-slate-200 max-h-[90vh] overflow-y-auto">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center text-xl shadow">
+                        <i class="fa-solid fa-file-import"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-slate-800">Add & Import Submitted E-Posters</h3>
+                        <p class="text-xs text-slate-500">Easily update poster data or paste custom JSON metadata</p>
+                    </div>
+                </div>
+                <button onclick="closeBatchImporterModal()" class="text-slate-400 hover:text-slate-600 text-lg">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
 
             <div class="space-y-4 text-xs text-slate-700">
                 <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
@@ -461,13 +502,13 @@
                     </p>
                     <pre class="bg-slate-900 text-sky-300 p-3 rounded-lg mt-2 overflow-x-auto text-[11px]">
 {
-  id: "ABDA26-001",
+  id: "AA-001",
   title: "Your Submitted Poster Title Here",
   category: "Scientific Research", // Scientific Research, Educational Exhibit, or Case Report/Series
   authors: "Dr. Author Name¹, Prof. Co-Author²",
   affiliations: "¹Institution A, ²Institution B",
   keywords: ["Keyword1", "Keyword2"],
-  imageUrl: "assets/posters/ABDA26-001.jpg", // Path to image file in your GitHub repository
+  imageUrl: "assets/posters/AA-001.jpg", // Path to image file in your GitHub repository
   background: "Background & Objectives details...",
   methods: "Materials & Methods details...",
   conclusion: "Conclusion details..."
@@ -477,7 +518,7 @@
                 <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                     <h4 class="font-bold text-slate-800 mb-1">Option B: Quick Live JSON Import (Instant Preview)</h4>
                     <p class="text-slate-600 mb-2">Paste a valid JSON array of poster objects below to test live without editing code:</p>
-                    <textarea id="jsonImportInput" rows="5" class="w-full p-3 font-mono text-[11px] bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder='[ { "id": "ABDA26-001", "title": "Example Title", "category": "Scientific Research", "authors": "Author Name", "affiliations": "Hospital KL", "keywords": ["Breast Cancer"], "imageUrl": "", "background": "...", "methods": "...", "conclusion": "..." } ]'></textarea>
+                    <textarea id="jsonImportInput" rows="5" class="w-full p-3 font-mono text-[11px] bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder='[ { "id": "AA-001", "title": "Example Title", "category": "Scientific Research", "authors": "Author Name", "affiliations": "Hospital KL", "keywords": ["Breast Cancer"], "imageUrl": "", "background": "...", "methods": "...", "conclusion": "..." } ]'></textarea>
                     <button onclick="importJSONData()" class="mt-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate-right"></i> Load JSON into Portal
                     </button>
@@ -502,27 +543,12 @@
         // When authors submit their e-posters, add or paste their objects into this array.
         // Any slot defined here will automatically replace the corresponding template slot.
         // =========================================================================
-        const RAW_SUBMITTED_POSTERS = [
-            /* EXAMPLE OF HOW TO ADD A SUBMITTED POSTER:
-            {
-                id: "ABDA26-001",
-                title: "Your Submitted Poster Title Here",
-                category: "Scientific Research", // "Scientific Research", "Educational Exhibit", or "Case Report/Series"
-                authors: "Dr. Author Name¹, Prof. Co-Author²",
-                affiliations: "¹Institution A, ²Institution B",
-                keywords: ["Breast Cancer", "Radiology"],
-                imageUrl: "assets/posters/ABDA26-001.jpg", // Path to poster image in your repo (optional)
-                background: "Background & Objectives details...",
-                methods: "Materials & Methods details...",
-                conclusion: "Conclusion details..."
-            }
-            */
-        ];
+        const RAW_SUBMITTED_POSTERS = [];
 
         // Generate 56 standardized template slots (Overridden when RAW_SUBMITTED_POSTERS are populated)
         const POSTER_DATABASE = Array.from({ length: 56 }, (_, i) => {
             const num = i + 1;
-            const idStr = `ABDA26-${String(num).padStart(3, '0')}`;
+            const idStr = `AA-${String(num).padStart(3, '0')}`;
             const submitted = RAW_SUBMITTED_POSTERS.find(p => p.id === idStr) || RAW_SUBMITTED_POSTERS[i];
             const cat = CATEGORIES[i % CATEGORIES.length];
 
@@ -535,7 +561,6 @@
                     affiliations: submitted.affiliations || "Institution Pending",
                     keywords: submitted.keywords || ["ABDA2026"],
                     imageUrl: submitted.imageUrl || "",
-                    likes: submitted.likes || 0,
                     views: submitted.views || 0,
                     background: submitted.background || "Abstract background pending submission.",
                     methods: submitted.methods || "Methods pending submission.",
@@ -552,8 +577,7 @@
                 authors: "Author Name(s) — Pending Submission",
                 affiliations: "Institution / Department — Pending Submission",
                 keywords: ["Template", "Pending Submission", "ABDA2026"],
-                imageUrl: "", // User can add image path e.g. "assets/posters/ABDA26-001.jpg"
-                likes: 0,
+                imageUrl: "",
                 views: 0,
                 background: "ABSTRACT BACKGROUND & OBJECTIVES: Content pending submission by authors. You can edit this slot by adding poster details into RAW_SUBMITTED_POSTERS inside index.html or importing via the 'Add/Import Posters' portal button.",
                 methods: "MATERIALS & METHODS: Study methodology pending submission.",
@@ -565,20 +589,12 @@
         // Global Application State
         let currentPosters = [...POSTER_DATABASE];
         let bookmarks = new Set(JSON.parse(localStorage.getItem('abda2026_bookmarks') || '[]'));
-        let likesMap = JSON.parse(localStorage.getItem('abda2026_likes') || '{}');
         let currentCategory = 'ALL';
         let currentSearchQuery = '';
         let viewMode = 'grid'; // 'grid' or 'list'
         let activePoster = null;
         let zoomScale = 1.0;
         let ttsUtterance = null;
-
-        // Initialize state likes
-        POSTER_DATABASE.forEach(p => {
-            if (likesMap[p.id]) {
-                p.likes = likesMap[p.id];
-            }
-        });
 
         // DOM Load Initialization
         window.addEventListener('DOMContentLoaded', () => {
@@ -594,6 +610,7 @@
 
             if (currentPosters.length === 0) {
                 noResults.classList.remove('hidden');
+                document.getElementById('totalPosterCount').innerText = 0;
                 return;
             } else {
                 noResults.classList.add('hidden');
@@ -615,7 +632,6 @@
                     card.innerHTML = `
                         <!-- Card Image Header / Simulated Canvas Thumbnail -->
                         <div class="relative bg-slate-900 h-44 overflow-hidden flex items-center justify-center cursor-pointer border-b border-slate-100" onclick="openPosterModal('${poster.id}')">
-                            <!-- Visual Graphic Mockup inside poster preview -->
                             <div class="absolute inset-0 bg-gradient-to-br from-sky-900 via-slate-900 to-indigo-950 p-3 flex flex-col justify-between text-white opacity-90 group-hover:scale-105 transition duration-500">
                                 <div>
                                     <div class="flex items-center justify-between text-[10px] text-sky-300 font-bold mb-1">
@@ -628,7 +644,6 @@
                                 </div>
                             </div>
 
-                            <!-- Overlay Hover Icon -->
                             <div class="absolute inset-0 bg-slate-950/40 opacity-0 group-hover:opacity-100 transition flex items-center justify-center text-white gap-2">
                                 <span class="bg-pink-600 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
                                     <i class="fa-solid fa-expand"></i> View Poster
@@ -657,10 +672,8 @@
                                 </p>
                             </div>
 
-                            <!-- Card Footer stats -->
                             <div class="mt-4 pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500">
                                 <div class="flex items-center space-x-3">
-                                    <span title="Likes"><i class="fa-solid fa-thumbs-up text-pink-500 mr-1"></i>${poster.likes}</span>
                                     <span title="Views"><i class="fa-solid fa-eye text-sky-500 mr-1"></i>${poster.views}</span>
                                 </div>
                                 <button onclick="openPosterModal('${poster.id}')" class="text-xs font-bold text-sky-600 hover:text-sky-800 flex items-center gap-1">
@@ -670,37 +683,36 @@
                         </div>
                     `;
                     gridContainer.appendChild(card);
-
                 } else {
-                    // List View rendering
-                    const row = document.createElement('div');
-                    row.className = "bg-white rounded-xl border border-slate-200 p-4 shadow-xs hover:shadow-md transition flex flex-col sm:flex-row sm:items-center justify-between gap-4";
-                    row.innerHTML = `
-                        <div class="flex items-start gap-4 flex-1">
-                            <span class="bg-slate-900 text-sky-400 font-mono text-xs font-bold px-2.5 py-1 rounded-lg border border-slate-800 flex-shrink-0">
+                    const item = document.createElement('div');
+                    item.className = "bg-white rounded-xl border border-slate-200 p-4 shadow-sm hover:shadow-md transition flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 group";
+                    item.innerHTML = `
+                        <div class="flex items-start gap-3 flex-1 cursor-pointer" onclick="openPosterModal('${poster.id}')">
+                            <span class="bg-sky-600 text-white font-mono font-bold text-xs px-2.5 py-1 rounded-md shrink-0">
                                 ${poster.id}
                             </span>
-                            <div class="flex-1">
-                                <div class="flex flex-wrap items-center gap-2 mb-1">
-                                    <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2 py-0.5 rounded border border-sky-100">${poster.category}</span>
-                                </div>
-                                <h3 onclick="openPosterModal('${poster.id}')" class="text-sm font-bold text-slate-800 hover:text-sky-600 cursor-pointer">
+                            <div>
+                                <h3 class="text-sm font-bold text-slate-800 group-hover:text-sky-600 transition leading-snug">
                                     ${poster.title}
                                 </h3>
-                                <p class="text-xs text-slate-500 mt-0.5">${poster.authors} — <span class="italic text-slate-400">${poster.affiliations}</span></p>
+                                <p class="text-xs text-slate-500 mt-0.5">
+                                    ${poster.authors} &bull; <span class="italic text-slate-400">${poster.affiliations}</span>
+                                </p>
                             </div>
                         </div>
-
-                        <div class="flex items-center space-x-3 sm:border-l sm:border-slate-200 sm:pl-4">
-                            <button onclick="toggleBookmark(event, '${poster.id}')" class="p-2 text-slate-400 hover:text-pink-500">
-                                <i class="${isBookmarked ? 'fa-solid text-pink-500' : 'fa-regular'} fa-heart text-base"></i>
+                        <div class="flex items-center gap-3 shrink-0 self-end sm:self-center">
+                            <span class="text-[10px] font-bold text-sky-700 bg-sky-50 px-2.5 py-1 rounded-md border border-sky-100 uppercase">
+                                ${poster.category}
+                            </span>
+                            <button onclick="toggleBookmark(event, '${poster.id}')" class="text-slate-400 hover:text-pink-500 transition p-1">
+                                <i class="${isBookmarked ? 'fa-solid text-pink-500' : 'fa-regular'} fa-heart text-sm"></i>
                             </button>
-                            <button onclick="openPosterModal('${poster.id}')" class="px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition whitespace-nowrap">
-                                View Poster
+                            <button onclick="openPosterModal('${poster.id}')" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-700 text-white text-xs font-bold rounded-lg transition flex items-center gap-1">
+                                View <i class="fa-solid fa-chevron-right text-[10px]"></i>
                             </button>
                         </div>
                     `;
-                    gridContainer.appendChild(row);
+                    gridContainer.appendChild(item);
                 }
             });
 
@@ -733,8 +745,6 @@
             // Sort Engine
             if (sort === 'id-asc') {
                 list.sort((a,b) => a.id.localeCompare(b.id));
-            } else if (sort === 'votes-desc') {
-                list.sort((a,b) => b.likes - a.likes);
             } else if (sort === 'views-desc') {
                 list.sort((a,b) => b.views - a.views);
             } else if (sort === 'title-asc') {
@@ -842,7 +852,6 @@
             document.getElementById('modalBackground').innerText = poster.background;
             document.getElementById('modalMethods').innerText = poster.methods;
             document.getElementById('modalConclusion').innerText = poster.conclusion;
-            document.getElementById('modalLikeCount').innerText = poster.likes;
 
             // Render Keywords
             const kwContainer = document.getElementById('modalKeywords');
@@ -1113,25 +1122,6 @@
             document.getElementById('zoomLevelDisplay').innerText = `100%`;
         }
 
-        function likeCurrentPoster() {
-            if (!activePoster) return;
-            activePoster.likes++;
-            likesMap[activePoster.id] = activePoster.likes;
-            localStorage.setItem('abda2026_likes', JSON.stringify(likesMap));
-
-            document.getElementById('modalLikeCount').innerText = activePoster.likes;
-            renderPosterGallery();
-
-            // Trigger confetti effect
-            if (typeof confetti === 'function') {
-                confetti({
-                    particleCount: 50,
-                    spread: 60,
-                    origin: { y: 0.8 }
-                });
-            }
-        }
-
         function switchSidebarTab(tab) {
             const abstractTab = document.getElementById('tabAbstractContent');
             const commentsTab = document.getElementById('tabCommentsContent');
@@ -1292,7 +1282,6 @@
                             POSTER_DATABASE[targetIndex] = { ...POSTER_DATABASE[targetIndex], ...item };
                         } else {
                             POSTER_DATABASE.push({
-                                likes: 0,
                                 views: 0,
                                 comments: [],
                                 ...item
