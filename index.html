@@ -366,9 +366,16 @@
                         </div>
 
                         <div>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Methods & Results</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Materials & Methods</span>
                             <p id="modalMethods" class="text-xs text-slate-600 leading-relaxed">
                                 Abstract methods placeholder...
+                            </p>
+                        </div>
+
+                        <div>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Results & Findings</span>
+                            <p id="modalResults" class="text-xs text-slate-600 leading-relaxed">
+                                Abstract results placeholder...
                             </p>
                         </div>
 
@@ -479,6 +486,7 @@
   imageUrl: "assets/posters/AA-001.jpg",
   background: "Background & Objectives details...",
   methods: "Materials & Methods details...",
+  results: "Study results and key metrics...",
   conclusion: "Conclusion details..."
 }</pre>
                 </div>
@@ -486,7 +494,7 @@
                 <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
                     <h4 class="font-bold text-slate-800 mb-1">Option B: Quick Live JSON Import (Instant Preview)</h4>
                     <p class="text-slate-600 mb-2">Paste a valid JSON array of poster objects below to test live without editing code:</p>
-                    <textarea id="jsonImportInput" rows="4" class="w-full p-3 font-mono text-[11px] bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder='[ { "id": "AA-001", "title": "Example Title", "category": "Scientific Research", "authors": "Author Name", "affiliations": "Hospital KL", "keywords": ["Breast Cancer"], "imageUrl": "", "background": "...", "methods": "...", "conclusion": "..." } ]'></textarea>
+                    <textarea id="jsonImportInput" rows="4" class="w-full p-3 font-mono text-[11px] bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder='[ { "id": "AA-001", "title": "Example Title", "category": "Scientific Research", "authors": "Author Name", "affiliations": "Hospital KL", "keywords": ["Breast Cancer"], "imageUrl": "", "background": "...", "methods": "...", "results": "...", "conclusion": "..." } ]'></textarea>
                     <button onclick="importJSONData()" class="mt-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
                         <i class="fa-solid fa-rotate-right"></i> Load JSON into Portal
                     </button>
@@ -534,6 +542,7 @@
                     views: submitted.views || 0,
                     background: submitted.background || "Abstract background pending submission.",
                     methods: submitted.methods || "Methods pending submission.",
+                    results: submitted.results || "Results pending submission.",
                     conclusion: submitted.conclusion || "Conclusion pending submission.",
                     comments: submitted.comments || []
                 };
@@ -550,6 +559,7 @@
                 views: 0,
                 background: "ABSTRACT BACKGROUND & OBJECTIVES: Content pending submission by authors. You can edit this slot by adding poster details into RAW_SUBMITTED_POSTERS inside index.html or importing via the 'Add/Import Posters' portal button.",
                 methods: "MATERIALS & METHODS: Study methodology pending submission.",
+                results: "RESULTS & FINDINGS: Observational data, cohorts, and clinical results pending submission.",
                 conclusion: "CONCLUSION & IMPLICATIONS: Clinical conclusions pending submission.",
                 comments: []
             };
@@ -615,6 +625,7 @@
                                 const imgVal = getVal(['imageurl', 'image', 'file', 'poster image']) || `assets/posters/${idVal}.jpg`;
                                 const bgVal = getVal(['background', 'background & objectives', 'abstract', 'objective']) || 'Abstract background pending submission.';
                                 const methodsVal = getVal(['methods', 'materials & methods', 'methodology']) || 'Methods pending submission.';
+                                const resultsVal = getVal(['results', 'results & findings', 'findings', 'result']) || 'Results pending submission.';
                                 const conclVal = getVal(['conclusion', 'conclusion & implications', 'conclusions']) || 'Conclusion pending submission.';
 
                                 const keywordsList = kwVal ? kwVal.split(/[,;]/).map(s => s.trim()).filter(Boolean) : ['ABDA2026'];
@@ -630,6 +641,7 @@
                                     views: 0,
                                     background: bgVal,
                                     methods: methodsVal,
+                                    results: resultsVal,
                                     conclusion: conclVal,
                                     comments: []
                                 };
@@ -891,6 +903,7 @@
             document.getElementById('modalAffiliations').innerText = poster.affiliations;
             document.getElementById('modalBackground').innerText = poster.background;
             document.getElementById('modalMethods').innerText = poster.methods;
+            document.getElementById('modalResults').innerText = poster.results;
             document.getElementById('modalConclusion').innerText = poster.conclusion;
 
             const kwContainer = document.getElementById('modalKeywords');
@@ -1010,7 +1023,11 @@
 
             drawCanvasBox(ctx, 40, startY, colWidth, 360, "1. BACKGROUND & OBJECTIVES", poster.background, "#0284c7");
             drawCanvasBox(ctx, 40, startY + 380, colWidth, 400, "2. MATERIALS & METHODS", poster.methods, "#0284c7");
-            drawCanvasChartBox(ctx, 40 + colWidth + padding, startY, colWidth, 400, "3. RESULTS & STATISTICAL DATA");
+            if (poster.results && poster.results !== "Results pending submission.") {
+                drawCanvasBox(ctx, 40 + colWidth + padding, startY, colWidth, 400, "3. RESULTS & STATISTICAL DATA", poster.results, "#0284c7");
+            } else {
+                drawCanvasChartBox(ctx, 40 + colWidth + padding, startY, colWidth, 400, "3. RESULTS & STATISTICAL DATA");
+            }
             drawCanvasBox(ctx, 40 + colWidth + padding, startY + 420, colWidth, 360, "4. CONCLUSION & CLINICAL IMPLICATIONS", poster.conclusion, "#ec4899");
 
             const refY = startY + 800;
@@ -1265,7 +1282,7 @@
                 return;
             }
 
-            const textToRead = `Title: ${activePoster.title}. Authors: ${activePoster.authors}. Background: ${activePoster.background}. Conclusion: ${activePoster.conclusion}`;
+            const textToRead = `Title: ${activePoster.title}. Authors: ${activePoster.authors}. Background: ${activePoster.background}. Methods: ${activePoster.methods}. Results: ${activePoster.results}. Conclusion: ${activePoster.conclusion}`;
             
             ttsUtterance = new SpeechSynthesisUtterance(textToRead);
             ttsUtterance.rate = 0.95;
