@@ -8,7 +8,7 @@ import re
 # them into the JavaScript data format required for index.html.
 # ==============================================================================
 
-CSV_FILE_PATH = "posters.csv"
+CSV_FILE_PATH = "posters.csv.csv"
 HTML_FILE_PATH = "index.html"
 OUTPUT_JSON_PATH = "posters.json"
 
