@@ -296,20 +296,20 @@
                             <button onclick="zoomPoster(0.8)" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 transition" title="Zoom Out">
                                 <i class="fa-solid fa-magnifying-glass-minus"></i>
                             </button>
-                            <button onclick="resetPosterZoom()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 transition" title="Reset View">
-                                <i class="fa-solid fa-rotate-left mr-1"></i> Reset
+                            <button onclick="resetPosterZoom()" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 rounded text-slate-200 transition" title="Fit to Screen">
+                                <i class="fa-solid fa-expand mr-1"></i> Fit
                             </button>
-                            <span id="zoomLevelDisplay" class="text-[11px] text-slate-400 font-mono ml-2">100%</span>
+                            <span id="zoomLevelDisplay" class="text-[11px] text-slate-400 font-mono ml-2">Fit (100%)</span>
                         </div>
 
                         <div class="flex items-center space-x-3">
-                            <span class="text-slate-400 text-[11px] hidden sm:inline"><i class="fa-solid fa-hand-pointer mr-1"></i>Drag to pan</span>
+                            <span class="text-slate-400 text-[11px] hidden sm:inline"><i class="fa-solid fa-hand-pointer mr-1"></i>Drag to pan when zoomed</span>
                         </div>
                     </div>
 
                     <!-- Canvas Box -->
-                    <div id="posterCanvasWrapper" class="flex-1 overflow-auto p-4 flex items-center justify-center poster-canvas-container relative select-none">
-                        <canvas id="posterCanvas" class="shadow-2xl rounded border border-slate-800 bg-white transition-transform duration-100"></canvas>
+                    <div id="posterCanvasWrapper" class="flex-1 min-h-0 min-w-0 overflow-auto p-3 sm:p-5 flex items-center justify-center poster-canvas-container relative select-none bg-slate-950">
+                        <canvas id="posterCanvas" class="shadow-2xl rounded border border-slate-800 bg-white transition-all duration-150 m-auto block"></canvas>
                     </div>
 
                     <!-- Speech Synthesis Progress Bar -->
@@ -898,10 +898,23 @@
 
             updateModalBookmarkBtn();
             renderCommentsList();
-            renderPosterCanvas(poster);
 
+            // Open modal first so container dimensions are computed accurately
             document.getElementById('posterModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
+
+            renderPosterCanvas(poster);
+
+            // Fit the whole poster into view on first click
+            zoomScale = 1.0;
+            requestAnimationFrame(() => {
+                updatePosterDisplay();
+                const wrapper = document.getElementById('posterCanvasWrapper');
+                if (wrapper) {
+                    wrapper.scrollLeft = 0;
+                    wrapper.scrollTop = 0;
+                }
+            });
         }
 
         function closePosterModal() {
@@ -938,13 +951,16 @@
                 const img = new Image();
                 img.onload = function() {
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                    updatePosterDisplay();
                 };
                 img.onerror = function() {
                     drawFallbackCanvasPoster(ctx, canvas, poster);
+                    updatePosterDisplay();
                 };
                 img.src = poster.imageUrl;
             } else {
                 drawFallbackCanvasPoster(ctx, canvas, poster);
+                updatePosterDisplay();
             }
         }
 
@@ -1101,6 +1117,7 @@
             let startX, startY, scrollLeft, scrollTop;
 
             wrapper.addEventListener('mousedown', (e) => {
+                if (wrapper.scrollWidth <= wrapper.clientWidth && wrapper.scrollHeight <= wrapper.clientHeight) return;
                 isDragging = true;
                 startX = e.pageX - wrapper.offsetLeft;
                 startY = e.pageY - wrapper.offsetTop;
@@ -1123,19 +1140,60 @@
             });
         }
 
-        function zoomPoster(factor) {
-            zoomScale = Math.max(0.5, Math.min(2.5, zoomScale * factor));
+        function updatePosterDisplay() {
+            const wrapper = document.getElementById('posterCanvasWrapper');
             const canvas = document.getElementById('posterCanvas');
-            canvas.style.transform = `scale(${zoomScale})`;
-            document.getElementById('zoomLevelDisplay').innerText = `${Math.round(zoomScale * 100)}%`;
+            if (!wrapper || !canvas) return;
+
+            const pad = 24;
+            const availW = Math.max(100, wrapper.clientWidth - pad);
+            const availH = Math.max(100, wrapper.clientHeight - pad);
+            const aspect = (canvas.width || 1200) / (canvas.height || 1600);
+
+            let baseW, baseH;
+            if (availW / availH > aspect) {
+                // Height constrained
+                baseH = availH;
+                baseW = availH * aspect;
+            } else {
+                // Width constrained
+                baseW = availW;
+                baseH = availW / aspect;
+            }
+
+            canvas.style.width = `${Math.round(baseW * zoomScale)}px`;
+            canvas.style.height = `${Math.round(baseH * zoomScale)}px`;
+            canvas.style.maxWidth = 'none';
+            canvas.style.maxHeight = 'none';
+
+            const displayPercent = Math.round(zoomScale * 100);
+            const zoomDisplay = document.getElementById('zoomLevelDisplay');
+            if (zoomDisplay) {
+                zoomDisplay.innerText = zoomScale === 1.0 ? 'Fit (100%)' : `${displayPercent}%`;
+            }
+        }
+
+        function zoomPoster(factor) {
+            zoomScale = Math.max(1.0, Math.min(3.0, zoomScale * factor));
+            updatePosterDisplay();
         }
 
         function resetPosterZoom() {
             zoomScale = 1.0;
-            const canvas = document.getElementById('posterCanvas');
-            canvas.style.transform = `scale(1)`;
-            document.getElementById('zoomLevelDisplay').innerText = `100%`;
+            updatePosterDisplay();
+            const wrapper = document.getElementById('posterCanvasWrapper');
+            if (wrapper) {
+                wrapper.scrollLeft = 0;
+                wrapper.scrollTop = 0;
+            }
         }
+
+        window.addEventListener('resize', () => {
+            const modal = document.getElementById('posterModal');
+            if (modal && !modal.classList.contains('hidden')) {
+                updatePosterDisplay();
+            }
+        });
 
         function switchSidebarTab(tab) {
             const abstractTab = document.getElementById('tabAbstractContent');
