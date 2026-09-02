@@ -66,7 +66,7 @@
 </head>
 <body class="h-full flex flex-col text-slate-800 font-sans antialiased bg-slate-100">
 
-    <!-- Top Conference Banner replica matching user image -->
+    <!-- Top Conference Banner replica matching ABDA 2026 styling -->
     <header class="relative overflow-hidden bg-gradient-to-r from-sky-500 via-sky-600 to-indigo-800 text-white shadow-xl border-b-4 border-pink-500">
         <!-- Background Pattern Decor -->
         <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <!-- Center Title Block matching the ABDA Banner styling -->
+                <!-- Center Title Block -->
                 <div class="text-center lg:text-left flex-1">
                     <div class="inline-block bg-pink-600 text-white text-xs font-extrabold uppercase px-3 py-1 rounded-full shadow-md tracking-wider mb-1 animate-pulse">
                         22nd Annual Scientific Meeting 2026
@@ -151,7 +151,7 @@
                 </div>
             </div>
 
-            <!-- Live Gallery Counters -->
+            <!-- Live Gallery Counters: Default 57 Posters -->
             <div class="flex items-center space-x-4 ml-auto">
                 <span class="bg-slate-800 text-sky-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono">
                     <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">57</span> Posters
@@ -250,7 +250,7 @@
                         AA-001
                     </span>
                     <span id="modalCategoryBadge" class="bg-sky-900 text-sky-200 text-xs font-semibold px-2.5 py-1 rounded-md hidden sm:inline-block">
-                        Radiology
+                        Scientific Research
                     </span>
                     <h2 id="modalPosterTitle" class="text-sm sm:text-base font-bold text-slate-100 truncate">
                         Poster Title Placeholder
@@ -372,6 +372,7 @@
                             </p>
                         </div>
 
+                        <!-- Dedicated Results Block -->
                         <div>
                             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Results & Findings</span>
                             <p id="modalResults" class="text-xs text-slate-600 leading-relaxed">
@@ -438,7 +439,7 @@
 
             <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
                 <ol class="list-decimal list-inside space-y-2">
-                    <li>Push your code and <code class="bg-slate-100 px-1 py-0.5 rounded text-pink-600 font-semibold">index.html</code> to your GitHub repository (e.g., <code class="bg-slate-100 px-1 py-0.5 rounded text-sky-600 font-semibold">abda2026-eposters</code>).</li>
+                    <li>Push your code, <code class="bg-slate-100 px-1 py-0.5 rounded text-pink-600 font-semibold">index.html</code>, and <code class="bg-slate-100 px-1 py-0.5 rounded text-pink-600 font-semibold">posters.csv</code> to your GitHub repository.</li>
                     <li>Go to repository <strong>Settings</strong> &rarr; <strong>Pages</strong>.</li>
                     <li>Under <strong>Branch</strong>, select <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-bold">main</code> and keep the folder as <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-bold">/(root)</code>.</li>
                     <li>Click <strong>Save</strong>. Your portal will be published online in 1–2 minutes!</li>
@@ -471,24 +472,10 @@
 
             <div class="space-y-4 text-xs text-slate-700">
                 <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                    <h4 class="font-bold text-slate-800 mb-1">Option A: Edit Directly in `index.html`</h4>
+                    <h4 class="font-bold text-slate-800 mb-1">Option A: Edit Directly in `posters.csv` (Recommended)</h4>
                     <p class="text-slate-600 leading-relaxed">
-                        Open <code class="bg-white px-1.5 py-0.5 rounded border text-pink-600">index.html</code> in your editor. Look for the variable <code class="bg-white px-1.5 py-0.5 rounded border text-sky-600 font-bold">RAW_SUBMITTED_POSTERS</code>. Add or update objects with your poster details:
+                        Update your <code class="bg-white px-1.5 py-0.5 rounded border text-sky-600 font-bold">posters.csv</code> file in your repository. The portal automatically reloads and displays your entries every time someone visits the site!
                     </p>
-                    <pre class="bg-slate-900 text-sky-300 p-3 rounded-lg mt-2 overflow-x-auto text-[11px]">
-{
-  id: "AA-001",
-  title: "Your Submitted Poster Title Here",
-  category: "Scientific Research",
-  authors: "Dr. Author Name¹, Prof. Co-Author²",
-  affiliations: "¹Institution A, ²Institution B",
-  keywords: ["Mammography", "Biomarkers"],
-  imageUrl: "assets/posters/AA-001.jpg",
-  background: "Background & Objectives details...",
-  methods: "Materials & Methods details...",
-  results: "Study results and key metrics...",
-  conclusion: "Conclusion details..."
-}</pre>
                 </div>
 
                 <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
@@ -520,10 +507,10 @@
             "Case Report/Series"
         ];
 
-        // SUBMITTED E-POSTERS DATA ARRAY
+        // Hardcoded submissions (optional fallback)
         const RAW_SUBMITTED_POSTERS = [];
 
-        // Generate 57 standardized template slots
+        // Generate 57 standardized template slots: AA-001 through AA-057
         const POSTER_DATABASE = Array.from({ length: 57 }, (_, i) => {
             const num = i + 1;
             const idStr = `AA-${String(num).padStart(3, '0')}`;
@@ -557,7 +544,7 @@
                 keywords: ["Template", "Pending Submission", "ABDA2026"],
                 imageUrl: "",
                 views: 0,
-                background: "ABSTRACT BACKGROUND & OBJECTIVES: Content pending submission by authors. You can edit this slot by adding poster details into RAW_SUBMITTED_POSTERS inside index.html or importing via the 'Add/Import Posters' portal button.",
+                background: "ABSTRACT BACKGROUND & OBJECTIVES: Content pending submission by authors. You can edit this slot by adding poster details into posters.csv in your repository or importing via the 'Add/Import Posters' portal button.",
                 methods: "MATERIALS & METHODS: Study methodology pending submission.",
                 results: "RESULTS & FINDINGS: Observational data, cohorts, and clinical results pending submission.",
                 conclusion: "CONCLUSION & IMPLICATIONS: Clinical conclusions pending submission.",
@@ -588,7 +575,6 @@
                 // Fetch posters.csv with timestamp to prevent browser caching
                 const res = await fetch('posters.csv?v=' + new Date().getTime());
                 if (!res.ok) {
-                    // If posters.csv is not found or fails to load, render standard templates
                     renderPosterGallery();
                     return;
                 }
@@ -605,7 +591,6 @@
                     complete: function(results) {
                         if (results.data && results.data.length > 0) {
                             const parsedList = results.data.map((row, idx) => {
-                                // Forgiving case-insensitive key lookup
                                 const getVal = (possibleKeys) => {
                                     for (const k of possibleKeys) {
                                         const found = Object.keys(row).find(rk => rk.trim().toLowerCase() === k.toLowerCase());
@@ -648,7 +633,6 @@
                             });
 
                             if (parsedList.length > 0) {
-                                // Overwrite POSTER_DATABASE with CSV data
                                 POSTER_DATABASE.length = 0;
                                 POSTER_DATABASE.push(...parsedList);
                                 currentPosters = [...POSTER_DATABASE];
@@ -662,7 +646,7 @@
                     }
                 });
             } catch (err) {
-                console.log('Using default templates (posters.csv not reachable):', err);
+                console.log('Using default 57 templates (posters.csv not reachable):', err);
                 renderPosterGallery();
             }
         }
@@ -912,13 +896,13 @@
             updateModalBookmarkBtn();
             renderCommentsList();
 
-            // Open modal first so container dimensions are computed accurately
+            // Open modal first so viewport dimensions are available
             document.getElementById('posterModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
 
             renderPosterCanvas(poster);
 
-            // Fit the whole poster into view on first click
+            // Auto fit whole poster into view on first click
             zoomScale = 1.0;
             requestAnimationFrame(() => {
                 updatePosterDisplay();
@@ -1169,11 +1153,9 @@
 
             let baseW, baseH;
             if (availW / availH > aspect) {
-                // Height constrained
                 baseH = availH;
                 baseW = availH * aspect;
             } else {
-                // Width constrained
                 baseW = availW;
                 baseH = availW / aspect;
             }
