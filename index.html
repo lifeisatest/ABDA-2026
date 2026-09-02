@@ -154,7 +154,7 @@
             <!-- Live Gallery Counters -->
             <div class="flex items-center space-x-4 ml-auto">
                 <span class="bg-slate-800 text-sky-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono">
-                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">56</span> Posters
+                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">57</span> Posters
                 </span>
                 <button onclick="filterBookmarks()" id="bookmarkFilterBtn" class="bg-slate-800 hover:bg-slate-700 text-pink-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono transition flex items-center gap-1.5">
                     <i class="fa-solid fa-heart text-xs text-pink-500"></i>
@@ -523,8 +523,8 @@
         // SUBMITTED E-POSTERS DATA ARRAY
         const RAW_SUBMITTED_POSTERS = [];
 
-        // Generate 56 standardized template slots
-        const POSTER_DATABASE = Array.from({ length: 56 }, (_, i) => {
+        // Generate 57 standardized template slots
+        const POSTER_DATABASE = Array.from({ length: 57 }, (_, i) => {
             const num = i + 1;
             const idStr = `AA-${String(num).padStart(3, '0')}`;
             const submitted = RAW_SUBMITTED_POSTERS.find(p => p.id === idStr) || RAW_SUBMITTED_POSTERS[i];
