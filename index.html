@@ -34,6 +34,14 @@
     
     <!-- PapaParse for direct in-browser CSV reading -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
+    <!-- PDF.js for rendering PDF e-posters directly onto canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+    </script>
     
     <style>
         /* Custom scrollbars & canvas zoom constraints */
@@ -303,7 +311,16 @@
                         </div>
 
                         <div class="flex items-center space-x-3">
-                            <span class="text-slate-400 text-[11px] hidden sm:inline"><i class="fa-solid fa-hand-pointer mr-1"></i>Drag to pan when zoomed</span>
+                            <!-- Quick local file test button for organizers -->
+                            <label class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-[11px] cursor-pointer transition flex items-center gap-1 border border-slate-700" title="Test loading a local image or PDF file for this poster">
+                                <i class="fa-solid fa-folder-open text-sky-400"></i>
+                                <span class="hidden sm:inline">Preview Local File</span>
+                                <input type="file" accept=".jpg,.jpeg,.png,.pdf,.webp" onchange="previewLocalPosterFile(event)" class="hidden">
+                            </label>
+                            <a id="modalDownloadOriginalLink" href="#" target="_blank" download class="hidden px-2.5 py-1 bg-sky-900/80 hover:bg-sky-800 text-sky-200 hover:text-white rounded text-[11px] font-semibold transition items-center gap-1.5 border border-sky-600/50">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-[10px]"></i>
+                                <span>Open Original File</span>
+                            </a>
                         </div>
                     </div>
 
@@ -478,8 +495,15 @@
                     </p>
                 </div>
 
+                <!-- NEW: Direct local CSV file selection for testing without web server -->
+                <div class="bg-sky-50 p-3.5 rounded-xl border border-sky-200">
+                    <h4 class="font-bold text-sky-900 mb-1">Option B: Load CSV File from Your Computer (Instant Offline Test)</h4>
+                    <p class="text-sky-700 mb-2">If you opened `index.html` directly on your computer (where browsers block automatic file loading), select your CSV file here:</p>
+                    <input type="file" id="localCsvFileInput" accept=".csv,.txt" onchange="handleLocalCSVUpload(event)" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-sky-600 file:text-white hover:file:bg-sky-700 cursor-pointer">
+                </div>
+
                 <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                    <h4 class="font-bold text-slate-800 mb-1">Option B: Quick Live JSON Import (Instant Preview)</h4>
+                    <h4 class="font-bold text-slate-800 mb-1">Option C: Quick Live JSON Import (Instant Preview)</h4>
                     <p class="text-slate-600 mb-2">Paste a valid JSON array of poster objects below to test live without editing code:</p>
                     <textarea id="jsonImportInput" rows="4" class="w-full p-3 font-mono text-[11px] bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder='[ { "id": "AA-001", "title": "Example Title", "category": "Scientific Research", "authors": "Author Name", "affiliations": "Hospital KL", "keywords": ["Breast Cancer"], "imageUrl": "", "background": "...", "methods": "...", "results": "...", "conclusion": "..." } ]'></textarea>
                     <button onclick="importJSONData()" class="mt-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
@@ -571,84 +595,126 @@
         });
 
         async function loadPostersFromCSV() {
-            try {
-                // Fetch posters.csv with timestamp to prevent browser caching
-                const res = await fetch('posters.csv?v=' + new Date().getTime());
-                if (!res.ok) {
-                    renderPosterGallery();
-                    return;
-                }
+            // Check if running on local file system where browser fetch is restricted
+            if (window.location.protocol === 'file:') {
+                console.warn('Note: Opened via file:// protocol. Browsers restrict automated fetch(). Use "Add/Import Posters" -> "Load CSV File from Your Computer" to load locally.');
+                renderPosterGallery();
+                return;
+            }
 
-                const csvText = await res.text();
-                if (!csvText || csvText.trim().length === 0) {
-                    renderPosterGallery();
-                    return;
-                }
+            const candidateFiles = ['posters.csv', 'posters.csv.csv', 'Posters.csv'];
+            let csvText = null;
 
-                Papa.parse(csvText, {
-                    header: true,
-                    skipEmptyLines: true,
-                    complete: function(results) {
-                        if (results.data && results.data.length > 0) {
-                            const parsedList = results.data.map((row, idx) => {
-                                const getVal = (possibleKeys) => {
-                                    for (const k of possibleKeys) {
-                                        const found = Object.keys(row).find(rk => rk.trim().toLowerCase() === k.toLowerCase());
-                                        if (found && row[found] !== undefined && row[found] !== null) {
-                                            return String(row[found]).trim();
-                                        }
-                                    }
-                                    return '';
-                                };
-
-                                const idVal = getVal(['id', 'poster id', 'abstract id', 'number']) || `AA-${String(idx + 1).padStart(3, '0')}`;
-                                const titleVal = getVal(['title', 'poster title', 'name']);
-                                const catVal = getVal(['category', 'track', 'type']) || 'Scientific Research';
-                                const authorsVal = getVal(['authors', 'author', 'presenter']) || 'Author(s) Pending';
-                                const affilVal = getVal(['affiliations', 'affiliation', 'institution']) || 'Institution Pending';
-                                const kwVal = getVal(['keywords', 'keyword', 'tags']);
-                                const imgVal = getVal(['imageurl', 'image', 'file', 'poster image']) || `assets/posters/${idVal}.jpg`;
-                                const bgVal = getVal(['background', 'background & objectives', 'abstract', 'objective']) || 'Abstract background pending submission.';
-                                const methodsVal = getVal(['methods', 'materials & methods', 'methodology']) || 'Methods pending submission.';
-                                const resultsVal = getVal(['results', 'results & findings', 'findings', 'result']) || 'Results pending submission.';
-                                const conclVal = getVal(['conclusion', 'conclusion & implications', 'conclusions']) || 'Conclusion pending submission.';
-
-                                const keywordsList = kwVal ? kwVal.split(/[,;]/).map(s => s.trim()).filter(Boolean) : ['ABDA2026'];
-
-                                return {
-                                    id: idVal,
-                                    title: titleVal || `[Slot ${idVal}] Title Pending`,
-                                    category: catVal,
-                                    authors: authorsVal,
-                                    affiliations: affilVal,
-                                    keywords: keywordsList,
-                                    imageUrl: imgVal,
-                                    views: 0,
-                                    background: bgVal,
-                                    methods: methodsVal,
-                                    results: resultsVal,
-                                    conclusion: conclVal,
-                                    comments: []
-                                };
-                            });
-
-                            if (parsedList.length > 0) {
-                                POSTER_DATABASE.length = 0;
-                                POSTER_DATABASE.push(...parsedList);
-                                currentPosters = [...POSTER_DATABASE];
-                                showToast(`Loaded ${parsedList.length} poster(s) from posters.csv!`, 'success');
-                            }
+            for (const filename of candidateFiles) {
+                try {
+                    const res = await fetch(filename + '?v=' + new Date().getTime());
+                    if (res.ok) {
+                        const txt = await res.text();
+                        if (txt && txt.trim().length > 0) {
+                            csvText = txt;
+                            break;
                         }
+                    }
+                } catch (e) {
+                    // Try next candidate
+                }
+            }
+
+            if (!csvText) {
+                console.log('No valid posters.csv found on server, rendering default 57 template slots.');
+                renderPosterGallery();
+                return;
+            }
+
+            parseAndApplyCSV(csvText);
+        }
+
+        function parseAndApplyCSV(csvText) {
+            Papa.parse(csvText, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    if (results.data && results.data.length > 0) {
+                        let appliedCount = 0;
+                        results.data.forEach((row, idx) => {
+                            const getVal = (possibleKeys) => {
+                                for (const k of possibleKeys) {
+                                    const found = Object.keys(row).find(rk => rk.trim().toLowerCase() === k.toLowerCase());
+                                    if (found && row[found] !== undefined && row[found] !== null) {
+                                        return String(row[found]).trim();
+                                    }
+                                }
+                                return '';
+                            };
+
+                            const idVal = getVal(['id', 'poster id', 'abstract id', 'number']) || `AA-${String(idx + 1).padStart(3, '0')}`;
+                            const titleVal = getVal(['title', 'poster title', 'name']);
+                            if (!titleVal && !getVal(['background', 'abstract'])) return; // skip completely blank lines
+
+                            const catVal = getVal(['category', 'track', 'type']) || 'Scientific Research';
+                            const authorsVal = getVal(['authors', 'author', 'presenter']) || 'Author(s) Pending';
+                            const affilVal = getVal(['affiliations', 'affiliation', 'institution']) || 'Institution Pending';
+                            const kwVal = getVal(['keywords', 'keyword', 'tags']);
+                            const imgVal = getVal(['imageurl', 'image', 'file', 'poster image']) || `assets/posters/${idVal}.jpg`;
+                            const bgVal = getVal(['background', 'background & objectives', 'abstract', 'objective']) || 'Abstract background pending submission.';
+                            const methodsVal = getVal(['methods', 'materials & methods', 'methodology']) || 'Methods pending submission.';
+                            const resultsVal = getVal(['results', 'results & findings', 'findings', 'result']) || 'Results pending submission.';
+                            const conclVal = getVal(['conclusion', 'conclusion & implications', 'conclusions']) || 'Conclusion pending submission.';
+
+                            const keywordsList = kwVal ? kwVal.split(/[,;]/).map(s => s.trim()).filter(Boolean) : ['ABDA2026'];
+
+                            const posterObj = {
+                                id: idVal,
+                                title: titleVal || `[Slot ${idVal}] Title Pending`,
+                                category: catVal,
+                                authors: authorsVal,
+                                affiliations: affilVal,
+                                keywords: keywordsList,
+                                imageUrl: imgVal,
+                                views: 0,
+                                background: bgVal,
+                                methods: methodsVal,
+                                results: resultsVal,
+                                conclusion: conclVal,
+                                comments: []
+                            };
+
+                            // Update corresponding slot in POSTER_DATABASE
+                            const targetIdx = POSTER_DATABASE.findIndex(p => p.id.toUpperCase() === idVal.toUpperCase());
+                            if (targetIdx !== -1) {
+                                POSTER_DATABASE[targetIdx] = { ...POSTER_DATABASE[targetIdx], ...posterObj };
+                            } else {
+                                POSTER_DATABASE.push(posterObj);
+                            }
+                            appliedCount++;
+                        });
+
+                        currentPosters = [...POSTER_DATABASE];
                         renderPosterGallery();
-                    },
-                    error: function() {
+                        if (appliedCount > 0) {
+                            showToast(`Loaded ${appliedCount} poster abstract(s) successfully!`, 'success');
+                        }
+                    } else {
                         renderPosterGallery();
                     }
-                });
-            } catch (err) {
-                console.log('Using default 57 templates (posters.csv not reachable):', err);
-                renderPosterGallery();
-            }
+                },
+                error: function(err) {
+                    console.error('Error parsing CSV:', err);
+                    renderPosterGallery();
+                }
+            });
+        }
+
+        function handleLocalCSVUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                parseAndApplyCSV(e.target.result);
+                closeBatchImporterModal();
+            };
+            reader.readAsText(file);
         }
 
         function renderPosterGallery() {
@@ -896,6 +962,17 @@
             updateModalBookmarkBtn();
             renderCommentsList();
 
+            // Set up direct file download / open link if custom file is provided
+            const downloadBtn = document.getElementById('modalDownloadOriginalLink');
+            if (poster.imageUrl && poster.imageUrl.trim() !== "") {
+                downloadBtn.href = poster.imageUrl;
+                downloadBtn.classList.remove('hidden');
+                downloadBtn.classList.add('inline-flex');
+            } else {
+                downloadBtn.classList.add('hidden');
+                downloadBtn.classList.remove('inline-flex');
+            }
+
             // Open modal first so viewport dimensions are available
             document.getElementById('posterModal').classList.remove('hidden');
             document.body.style.overflow = 'hidden';
@@ -937,27 +1014,218 @@
             }
         }
 
-        function renderPosterCanvas(poster) {
+        async function renderPosterCanvas(poster) {
             const canvas = document.getElementById('posterCanvas');
             const ctx = canvas.getContext('2d');
 
             canvas.width = 1200;
             canvas.height = 1600;
 
-            if (poster.imageUrl && poster.imageUrl.trim() !== "") {
+            let fileUrl = poster.imageUrl ? poster.imageUrl.trim() : "";
+            // Remove any accidental leading slash which breaks subfolder hosting on GitHub Pages
+            if (fileUrl.startsWith('/')) {
+                fileUrl = fileUrl.substring(1);
+            }
+
+            if (!fileUrl) {
+                // Auto-guess file candidates in assets/posters/
+                fileUrl = `assets/posters/${poster.id}.jpg`;
+            }
+
+            const candidatesToTry = [
+                fileUrl,
+                `assets/posters/${poster.id}.jpg`,
+                `assets/posters/${poster.id}.JPG`,
+                `assets/posters/${poster.id}.png`,
+                `assets/posters/${poster.id}.PNG`,
+                `assets/posters/${poster.id}.pdf`,
+                `assets/posters/${poster.id}.PDF`,
+                `assets/posters/${poster.id}.jpeg`
+            ];
+            // Remove duplicates
+            const uniqueCandidates = [...new Set(candidatesToTry)];
+
+            let loadedSuccessfully = false;
+
+            for (const url of uniqueCandidates) {
+                const isPdf = url.toLowerCase().endsWith('.pdf') || url.toLowerCase().includes('.pdf?');
+                if (isPdf) {
+                    try {
+                        const loadingTask = pdfjsLib.getDocument(url);
+                        const pdfDoc = await loadingTask.promise;
+                        const page = await pdfDoc.getPage(1);
+                        const unscaledViewport = page.getViewport({ scale: 1.0 });
+                        const targetWidth = 1400;
+                        const scale = targetWidth / unscaledViewport.width;
+                        const viewport = page.getViewport({ scale: scale });
+
+                        canvas.width = Math.round(viewport.width);
+                        canvas.height = Math.round(viewport.height);
+
+                        await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                        updatePosterDisplay();
+                        loadedSuccessfully = true;
+
+                        // Update link to working file
+                        const downloadBtn = document.getElementById('modalDownloadOriginalLink');
+                        downloadBtn.href = url;
+                        downloadBtn.classList.remove('hidden');
+                        downloadBtn.classList.add('inline-flex');
+                        break;
+                    } catch (e) {
+                        // try next candidate
+                    }
+                } else {
+                    const success = await new Promise((resolve) => {
+                        const img = new Image();
+                        img.onload = function() {
+                            canvas.width = img.naturalWidth || 1200;
+                            canvas.height = img.naturalHeight || 1600;
+                            ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                            updatePosterDisplay();
+                            const downloadBtn = document.getElementById('modalDownloadOriginalLink');
+                            downloadBtn.href = url;
+                            downloadBtn.classList.remove('hidden');
+                            downloadBtn.classList.add('inline-flex');
+                            resolve(true);
+                        };
+                        img.onerror = function() {
+                            resolve(false);
+                        };
+                        img.src = url;
+                    });
+
+                    if (success) {
+                        loadedSuccessfully = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!loadedSuccessfully) {
+                drawFallbackCanvasPoster(ctx, canvas, poster, fileUrl);
+                updatePosterDisplay();
+            }
+        }
+
+        function drawFallbackCanvasPoster(ctx, canvas, poster, attemptedPath = "") {
+            const isTemplate = poster.title.includes('[Template Slot');
+
+            ctx.fillStyle = isTemplate ? '#f8fafc' : '#ffffff';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const headerGrad = ctx.createLinearGradient(0, 0, canvas.width, 0);
+            headerGrad.addColorStop(0, '#0284c7');
+            headerGrad.addColorStop(0.5, '#0369a1');
+            headerGrad.addColorStop(1, '#1e1b4b');
+            ctx.fillStyle = headerGrad;
+            ctx.fillRect(0, 0, canvas.width, 220);
+
+            ctx.fillStyle = '#ec4899';
+            ctx.fillRect(0, 215, canvas.width, 10);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.fillText(`22nd ABDA ANNUAL SCIENTIFIC MEETING 2026  |  POSTER #${poster.id}`, 50, 45);
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 28px Inter, sans-serif';
+            wrapCanvasText(ctx, poster.title, 50, 95, 1100, 38);
+
+            ctx.fillStyle = '#f0f9ff';
+            ctx.font = 'italic 18px Inter, sans-serif';
+            ctx.fillText(`${poster.authors} — ${poster.affiliations}`, 50, 195);
+
+            // Informative Notice Banner
+            ctx.fillStyle = '#fff1f2';
+            ctx.strokeStyle = '#fda4af';
+            ctx.lineWidth = 2;
+            ctx.fillRect(40, 240, canvas.width - 80, attemptedPath ? 60 : 50);
+            ctx.strokeRect(40, 240, canvas.width - 80, attemptedPath ? 60 : 50);
+
+            ctx.fillStyle = '#be123c';
+            ctx.font = 'bold 15px Inter, sans-serif';
+            if (attemptedPath) {
+                ctx.fillText(`⚠️ Poster graphic not found at: "${attemptedPath}". Checked .jpg, .png, and .pdf variants.`, 60, 268);
+                ctx.font = '13px Inter, sans-serif';
+                ctx.fillStyle = '#475569';
+                ctx.fillText(`Displaying abstract fallback below. Click 'Preview Local File' in the top bar to test an image directly.`, 60, 288);
+            } else {
+                ctx.fillText('📌 E-POSTER TEMPLATE SLOT — AWAITING ABSTRACT & IMAGE SUBMISSION FROM AUTHOR', 60, 272);
+            }
+
+            const padding = 40;
+            const colWidth = (canvas.width - (padding * 3)) / 2;
+            const startY = 320;
+
+            drawCanvasBox(ctx, 40, startY, colWidth, 350, "1. BACKGROUND & OBJECTIVES", poster.background, "#0284c7");
+            drawCanvasBox(ctx, 40, startY + 370, colWidth, 390, "2. MATERIALS & METHODS", poster.methods, "#0284c7");
+            if (poster.results && poster.results !== "Results pending submission.") {
+                drawCanvasBox(ctx, 40 + colWidth + padding, startY, colWidth, 390, "3. RESULTS & STATISTICAL DATA", poster.results, "#0284c7");
+            } else {
+                drawCanvasChartBox(ctx, 40 + colWidth + padding, startY, colWidth, 390, "3. RESULTS & STATISTICAL DATA");
+            }
+            drawCanvasBox(ctx, 40 + colWidth + padding, startY + 410, colWidth, 350, "4. CONCLUSION & CLINICAL IMPLICATIONS", poster.conclusion, "#ec4899");
+
+            const refY = startY + 780;
+            ctx.fillStyle = '#ffffff';
+            ctx.strokeStyle = '#cbd5e1';
+            ctx.lineWidth = 2;
+            ctx.fillRect(40, refY, canvas.width - 80, 360);
+            ctx.strokeRect(40, refY, canvas.width - 80, 360);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.font = 'bold 20px Inter, sans-serif';
+            ctx.fillText("5. KEY STUDY HIGHLIGHTS & REFERENCES", 60, refY + 40);
+
+            ctx.font = '16px Inter, sans-serif';
+            ctx.fillStyle = '#334155';
+            wrapCanvasText(ctx, `• ABDA 2026 Multidisciplinary Management Protocol guidelines.\n• Ethical clearance: IRB-2026-PENDING.\n• References: 1. Asian Breast Disease Association Manual (2026). 2. Malaysian Journal of Radiology (2026).`, 60, refY + 80, 1080, 28);
+
+            ctx.fillStyle = '#0f172a';
+            ctx.fillRect(0, canvas.height - 50, canvas.width, 50);
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 14px Inter, sans-serif';
+            ctx.fillText("ABDA 2026 — The Vertical, Connexion Conference & Event Centre, Bangsar South, KL (19–20 Sept 2026)", 50, canvas.height - 20);
+        }
+
+        async function previewLocalPosterFile(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const canvas = document.getElementById('posterCanvas');
+            const ctx = canvas.getContext('2d');
+            const fileUrl = URL.createObjectURL(file);
+
+            if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
+                try {
+                    const loadingTask = pdfjsLib.getDocument(fileUrl);
+                    const pdfDoc = await loadingTask.promise;
+                    const page = await pdfDoc.getPage(1);
+                    const unscaledViewport = page.getViewport({ scale: 1.0 });
+                    const targetWidth = 1400;
+                    const scale = targetWidth / unscaledViewport.width;
+                    const viewport = page.getViewport({ scale: scale });
+
+                    canvas.width = Math.round(viewport.width);
+                    canvas.height = Math.round(viewport.height);
+
+                    await page.render({ canvasContext: ctx, viewport: viewport }).promise;
+                    updatePosterDisplay();
+                    showToast(`Loaded ${file.name} successfully!`, 'success');
+                } catch (e) {
+                    showToast(`Error rendering PDF: ${e.message}`, 'error');
+                }
+            } else {
                 const img = new Image();
                 img.onload = function() {
+                    canvas.width = img.naturalWidth || 1200;
+                    canvas.height = img.naturalHeight || 1600;
                     ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
                     updatePosterDisplay();
+                    showToast(`Loaded ${file.name} successfully!`, 'success');
                 };
-                img.onerror = function() {
-                    drawFallbackCanvasPoster(ctx, canvas, poster);
-                    updatePosterDisplay();
-                };
-                img.src = poster.imageUrl;
-            } else {
-                drawFallbackCanvasPoster(ctx, canvas, poster);
-                updatePosterDisplay();
+                img.src = fileUrl;
             }
         }
 
