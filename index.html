@@ -118,10 +118,10 @@
                 </div>
             </div>
 
-            <!-- Live Gallery Counters: Default 57 Posters -->
+            <!-- Live Gallery Counters: Default 56 Posters -->
             <div class="flex items-center space-x-4 ml-auto">
                 <span class="bg-slate-800 text-sky-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono">
-                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">57</span> Posters
+                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">56</span> Posters
                 </span>
                 <button onclick="filterBookmarks()" id="bookmarkFilterBtn" class="bg-slate-800 hover:bg-slate-700 text-pink-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono transition flex items-center gap-1.5">
                     <i class="fa-solid fa-heart text-xs text-pink-500"></i>
@@ -392,11 +392,15 @@
         // Hardcoded submissions (optional fallback)
         const RAW_SUBMITTED_POSTERS = [];
 
-        // Generate 57 standardized template slots: AA-001 through AA-057
-        const POSTER_DATABASE = Array.from({ length: 57 }, (_, i) => {
-            const num = i + 1;
-            const idStr = `AA-${String(num).padStart(3, '0')}`;
-            const submitted = RAW_SUBMITTED_POSTERS.find(p => p.id === idStr) || RAW_SUBMITTED_POSTERS[i];
+        // Generate 56 standardized template slots (1 through 57, excluding AA-034)
+        const POSTER_SLOT_IDS = [];
+        for (let i = 1; i <= 57; i++) {
+            if (i === 34) continue; // Exclude AA-034
+            POSTER_SLOT_IDS.push(`AA-${String(i).padStart(3, '0')}`);
+        }
+
+        const POSTER_DATABASE = POSTER_SLOT_IDS.map((idStr, i) => {
+            const submitted = RAW_SUBMITTED_POSTERS.find(p => p.id === idStr);
             const cat = CATEGORIES[i % CATEGORIES.length];
 
             if (submitted) {
@@ -530,8 +534,8 @@
                                 }
                                 return '';
                             };
-
-                            const idVal = getVal(['id', 'poster id', 'abstract id', 'number']) || `AA-${String(idx + 1).padStart(3, '0')}`;
+                            const idVal = getVal(['id', 'poster id', 'abstract id', 'number']) || POSTER_SLOT_IDS[idx] || `AA-${String(idx + 1).padStart(3, '0')}`;
+                            if (idVal.toUpperCase() === 'AA-034') return; // Exclude AA-034 from CSV imports
                             const titleVal = getVal(['title', 'poster title', 'name']);
                             if (!titleVal && !getVal(['background', 'abstract'])) return;
 
