@@ -74,6 +74,62 @@
 </head>
 <body class="h-full flex flex-col text-slate-800 font-sans antialiased bg-slate-100">
 
+    <!-- Delegate Password Protection Access Gate -->
+    <div id="accessLockModal" class="fixed inset-0 z-[100] bg-slate-950/95 backdrop-blur-xl flex items-center justify-center p-4">
+        <div class="glass-card bg-slate-900/90 border border-slate-700/80 rounded-3xl shadow-2xl p-6 sm:p-8 max-w-md w-full text-center relative overflow-hidden">
+            <!-- Ambient Glow -->
+            <div class="absolute -top-16 -right-16 w-48 h-48 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-16 -left-16 w-48 h-48 bg-sky-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+            <div class="relative z-10">
+                <!-- Icon Header -->
+                <div class="w-16 h-16 bg-gradient-to-tr from-pink-600 to-sky-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg text-2xl">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+
+                <span class="inline-block bg-pink-500/20 text-pink-300 border border-pink-500/30 text-[10px] font-black tracking-widest uppercase px-3 py-1 rounded-full mb-2">
+                    Delegate Access Verification
+                </span>
+                
+                <h2 class="text-xl sm:text-2xl font-black text-white tracking-tight">
+                    ABDA 2026 E-Poster Portal
+                </h2>
+                <p class="text-xs text-slate-400 mt-1.5 leading-relaxed">
+                    Please enter the conference passcode provided upon registration to view scientific e-posters and abstracts.
+                </p>
+
+                <!-- Passcode Input Form -->
+                <form onsubmit="handlePasswordSubmit(event)" class="mt-6 space-y-3.5">
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-500">
+                            <i class="fa-solid fa-key text-xs"></i>
+                        </div>
+                        <input type="password" id="accessCodeInput" autocomplete="current-password" required
+                               placeholder="Enter Conference Passcode..."
+                               class="w-full pl-10 pr-10 py-3 bg-slate-800/90 border border-slate-700 text-white placeholder-slate-500 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pink-500 focus:border-transparent transition">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-200">
+                            <i id="passwordToggleIcon" class="fa-solid fa-eye text-xs"></i>
+                        </button>
+                    </div>
+
+                    <p id="passwordErrorMsg" class="hidden text-xs text-rose-400 font-semibold flex items-center justify-center gap-1.5 pt-1">
+                        <i class="fa-solid fa-circle-exclamation"></i>
+                        <span>Incorrect passcode. Please try again.</span>
+                    </p>
+
+                    <button type="submit" class="w-full py-3 bg-gradient-to-r from-pink-600 hover:from-pink-500 to-rose-600 text-white font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg transition flex items-center justify-center gap-2">
+                        <span>Unlock Portal</span>
+                        <i class="fa-solid fa-arrow-right text-xs"></i>
+                    </button>
+                </form>
+
+                <p class="text-[11px] text-slate-500 mt-4">
+                    Default passcode: <code class="text-sky-300 font-mono bg-slate-800/80 px-1.5 py-0.5 rounded border border-slate-700">ABDA2026</code>
+                </p>
+            </div>
+        </div>
+    </div>
+
     <!-- Top Conference Banner Container -->
     <header class="relative bg-slate-950 text-white shadow-xl border-b-4 border-pink-500">
         <!-- 1. Dedicated Graphic Banner Image Container (Automatically loads if assets/banner.jpg or .png is present) -->
@@ -127,6 +183,11 @@
                     <i class="fa-solid fa-heart text-xs text-pink-500"></i>
                     <span>Bookmarks:</span>
                     <span id="bookmarkCount" class="font-bold text-white">0</span>
+                </button>
+                <!-- Lock / Sign Out Button -->
+                <button onclick="lockPortal()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white px-2.5 py-1 rounded-md border border-slate-700 font-mono transition flex items-center gap-1.5" title="Lock Portal">
+                    <i class="fa-solid fa-lock text-xs text-amber-400"></i>
+                    <span class="hidden sm:inline">Lock</span>
                 </button>
             </div>
         </div>
@@ -383,6 +444,12 @@
     </div>
 
     <script>
+        // =========================================================================
+        // SECURITY & PORTAL PASSCODE CONFIGURATION
+        // Modify PORTAL_ACCESS_PASSWORD to change the conference access passcode
+        // =========================================================================
+        const PORTAL_ACCESS_PASSWORD = "ABDA2026"; // Case-insensitive
+
         const CATEGORIES = [
             "Scientific Research",
             "Educational Exhibit",
@@ -449,11 +516,79 @@
         let toastTimeout = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
+            checkPortalAuth();
             checkAndLoadGraphicBanner();
             updateBookmarkCounter();
             setupCanvasPanZoom();
             await loadPostersFromCSV();
         });
+
+        function checkPortalAuth() {
+            const isAuth = sessionStorage.getItem('abda2026_authenticated') === 'true' || 
+                           localStorage.getItem('abda2026_authenticated') === 'true';
+            const lockModal = document.getElementById('accessLockModal');
+            if (isAuth) {
+                lockModal.classList.add('hidden');
+                document.body.style.overflow = '';
+            } else {
+                lockModal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => {
+                    const input = document.getElementById('accessCodeInput');
+                    if (input) input.focus();
+                }, 100);
+            }
+        }
+
+        function handlePasswordSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('accessCodeInput');
+            const errorMsg = document.getElementById('passwordErrorMsg');
+            const entered = (input.value || '').trim();
+
+            if (entered.toUpperCase() === PORTAL_ACCESS_PASSWORD.toUpperCase()) {
+                sessionStorage.setItem('abda2026_authenticated', 'true');
+                localStorage.setItem('abda2026_authenticated', 'true');
+                errorMsg.classList.add('hidden');
+                input.value = '';
+                document.getElementById('accessLockModal').classList.add('hidden');
+                document.body.style.overflow = '';
+                showToast('Welcome to ABDA 2026 E-Poster Portal!', 'success');
+            } else {
+                errorMsg.classList.remove('hidden');
+                input.focus();
+                input.select();
+                // Vibration / Shake visual effect
+                const card = document.querySelector('#accessLockModal .glass-card');
+                if (card) {
+                    card.classList.add('animate-pulse');
+                    setTimeout(() => card.classList.remove('animate-pulse'), 500);
+                }
+            }
+        }
+
+        function togglePasswordVisibility() {
+            const input = document.getElementById('accessCodeInput');
+            const icon = document.getElementById('passwordToggleIcon');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-solid fa-eye-slash text-xs';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-solid fa-eye text-xs';
+            }
+        }
+
+        function lockPortal() {
+            sessionStorage.removeItem('abda2026_authenticated');
+            localStorage.removeItem('abda2026_authenticated');
+            const errorMsg = document.getElementById('passwordErrorMsg');
+            if (errorMsg) errorMsg.classList.add('hidden');
+            const input = document.getElementById('accessCodeInput');
+            if (input) input.value = '';
+            checkPortalAuth();
+            showToast('Portal locked.', 'info');
+        }
 
         function checkAndLoadGraphicBanner() {
             const candidateBanners = [
