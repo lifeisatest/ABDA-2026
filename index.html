@@ -74,73 +74,32 @@
 </head>
 <body class="h-full flex flex-col text-slate-800 font-sans antialiased bg-slate-100">
 
-    <!-- Top Conference Banner replica matching ABDA 2026 styling -->
-    <header class="relative overflow-hidden bg-gradient-to-r from-sky-500 via-sky-600 to-indigo-800 text-white shadow-xl border-b-4 border-pink-500">
-        <!-- Background Pattern Decor -->
-        <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
-        
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 relative z-10">
-            <div class="flex flex-col lg:flex-row items-center justify-between gap-6">
-                
-                <!-- Left Side: Organisers & Supporting Logos -->
-                <div class="flex items-center space-x-6 bg-white/10 backdrop-blur-md p-3 rounded-2xl border border-white/20">
-                    <!-- Organised By Block -->
-                    <div class="text-center sm:text-left">
-                        <span class="text-[10px] uppercase tracking-wider text-sky-100 font-bold block mb-1">Organised By</span>
-                        <div class="flex items-center gap-3">
-                            <div class="w-12 h-12 bg-white rounded-full p-1.5 shadow flex items-center justify-center text-sky-700 font-extrabold text-xs ring-2 ring-pink-400">
-                                <i class="fa-solid font-bold fa-ribbon text-pink-500 text-lg"></i> ABDA
-                            </div>
-                            <div class="hidden sm:block text-left border-l border-white/30 pl-3">
-                                <p class="text-xs font-bold leading-tight text-white">College of Radiology</p>
-                                <p class="text-[10px] text-sky-200">Academy of Medicine Malaysia</p>
-                                <p class="text-[10px] font-semibold text-pink-200">MYRAD</p>
-                            </div>
-                        </div>
-                    </div>
+    <!-- Top Conference Banner Container -->
+    <header class="relative bg-slate-950 text-white shadow-xl border-b-4 border-pink-500">
+        <!-- 1. Dedicated Graphic Banner Image Container (Automatically loads if assets/banner.jpg or .png is present) -->
+        <div id="graphicBannerContainer" class="hidden w-full relative overflow-hidden bg-slate-900 border-b border-white/10">
+            <img id="graphicBannerImg" src="" alt="ABDA 2026 Conference Banner" class="w-full h-auto max-h-56 sm:max-h-72 lg:max-h-84 object-cover object-center block">
+        </div>
 
-                    <div class="h-10 w-px bg-white/20"></div>
+        <!-- 2. Clean Conference Banner Visual -->
+        <div id="styledBannerContainer" class="relative overflow-hidden bg-gradient-to-r from-sky-600 via-sky-700 to-indigo-950 px-4 sm:px-6 lg:px-8 py-7">
+            <!-- Background Radial Pattern & Aesthetic Ambient Accents -->
+            <div class="absolute inset-0 opacity-15 bg-[radial-gradient(#fff_1.5px,transparent_1.5px)] [background-size:20px_20px] pointer-events-none"></div>
+            <div class="absolute -top-24 -right-24 w-96 h-96 bg-pink-500/20 rounded-full blur-3xl pointer-events-none"></div>
+            <div class="absolute -bottom-24 -left-24 w-96 h-96 bg-sky-400/20 rounded-full blur-3xl pointer-events-none"></div>
 
-                    <!-- Supported By Block -->
-                    <div class="text-center sm:text-left">
-                        <span class="text-[10px] uppercase tracking-wider text-sky-100 font-bold block mb-1">Supported By</span>
-                        <div class="flex items-center gap-2 text-xs font-semibold text-sky-100">
-                            <span class="bg-white/20 px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-building-columns mr-1"></i>MyCEB</span>
-                            <span class="bg-white/20 px-2 py-1 rounded text-[11px]"><i class="fa-solid fa-handshake mr-1"></i>Meet in Malaysia</span>
-                            <span class="bg-pink-500/80 text-white px-2 py-1 rounded text-[11px] font-bold"><i class="fa-solid fa-plane-arrival mr-1"></i>Visit Malaysia 2026</span>
-                        </div>
-                    </div>
+            <div class="max-w-7xl mx-auto relative z-10 text-center">
+                <div class="inline-flex items-center gap-2 bg-gradient-to-r from-pink-600 to-rose-600 text-white text-[11px] font-black uppercase px-3.5 py-1 rounded-full shadow tracking-wider mb-2.5">
+                    <i class="fa-solid fa-certificate text-[10px]"></i>
+                    <span>22nd Annual Scientific Meeting 2026</span>
                 </div>
-
-                <!-- Center Title Block -->
-                <div class="text-center lg:text-left flex-1">
-                    <div class="inline-block bg-pink-600 text-white text-xs font-extrabold uppercase px-3 py-1 rounded-full shadow-md tracking-wider mb-1 animate-pulse">
-                        22nd Annual Scientific Meeting 2026
-                    </div>
-                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight leading-tight drop-shadow-md">
-                        Asian Breast Disease Association <span class="text-pink-300">(ABDA)</span>
-                    </h1>
-                    <p class="text-sm sm:text-base font-semibold text-sky-100 mt-1 flex items-center justify-center lg:justify-start gap-2">
-                        <i class="fa-solid fa-bullseye text-pink-400"></i>
-                        <span>Theme: <strong class="text-white underline decoration-pink-400">Strategising Multidisciplinary Management of Breast Diseases</strong></span>
-                    </p>
-                </div>
-
-                <!-- Right Action / Kiosk Controls -->
-                <div class="flex items-center gap-2">
-                    <button onclick="openBatchImporterModal()" class="bg-sky-900/80 hover:bg-sky-900 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/20 transition flex items-center gap-2 shadow" title="Batch Add/Update E-Posters">
-                        <i class="fa-solid fa-file-import text-sky-300"></i>
-                        <span class="hidden sm:inline">Add/Import Posters</span>
-                    </button>
-                    <button onclick="toggleKioskMode()" class="bg-slate-900/60 hover:bg-slate-900 text-white text-xs font-semibold px-3 py-2 rounded-xl border border-white/20 transition flex items-center gap-2 shadow" title="Toggle Touchscreen Kiosk Mode">
-                        <i class="fa-solid fa-tv text-pink-400"></i>
-                        <span class="hidden sm:inline">Kiosk Mode</span>
-                    </button>
-                    <button onclick="openGitHubGuideModal()" class="bg-pink-600 hover:bg-pink-700 text-white text-xs font-bold px-3 py-2 rounded-xl shadow-lg transition flex items-center gap-2 border border-pink-400">
-                        <i class="fa-brands fa-github text-sm"></i>
-                        <span>GitHub Pages Setup</span>
-                    </button>
-                </div>
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight leading-tight drop-shadow-md">
+                    Asian Breast Disease Association <span class="text-pink-300">(ABDA)</span>
+                </h1>
+                <p class="text-xs sm:text-sm font-semibold text-sky-100 mt-2 flex items-center justify-center gap-2 max-w-2xl mx-auto">
+                    <i class="fa-solid fa-bullseye text-pink-400 text-sm shrink-0"></i>
+                    <span>Theme: <strong class="text-white underline decoration-pink-400 decoration-2 underline-offset-2">Strategising Multidisciplinary Management of Breast Diseases</strong></span>
+                </p>
             </div>
         </div>
     </header>
@@ -417,87 +376,6 @@
         </div>
     </div>
 
-    <!-- GitHub Pages Setup Guide Modal -->
-    <div id="githubGuideModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full p-6 border border-slate-200 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center text-xl">
-                        <i class="fa-brands fa-github"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-slate-800">Deploying on GitHub Pages for ABDA 2026</h3>
-                        <p class="text-xs text-slate-500">Step-by-step instructions to launch this static website for free</p>
-                    </div>
-                </div>
-                <button onclick="closeGitHubGuideModal()" class="text-slate-400 hover:text-slate-600 text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="space-y-3 text-xs text-slate-600 leading-relaxed">
-                <ol class="list-decimal list-inside space-y-2">
-                    <li>Push your code, <code class="bg-slate-100 px-1 py-0.5 rounded text-pink-600 font-semibold">index.html</code>, and <code class="bg-slate-100 px-1 py-0.5 rounded text-pink-600 font-semibold">posters.csv</code> to your GitHub repository.</li>
-                    <li>Go to repository <strong>Settings</strong> &rarr; <strong>Pages</strong>.</li>
-                    <li>Under <strong>Branch</strong>, select <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-bold">main</code> and keep the folder as <code class="bg-slate-100 px-1 py-0.5 rounded text-slate-800 font-bold">/(root)</code>.</li>
-                    <li>Click <strong>Save</strong>. Your portal will be published online in 1–2 minutes!</li>
-                </ol>
-            </div>
-
-            <div class="mt-6 text-right border-t border-slate-200 pt-4">
-                <button onclick="closeGitHubGuideModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition">Got it!</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Batch Poster Importer Modal for Organizers -->
-    <div id="batchImporterModal" class="fixed inset-0 z-50 hidden bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-3xl w-full p-6 border border-slate-200 max-h-[90vh] overflow-y-auto">
-            <div class="flex items-center justify-between border-b border-slate-200 pb-4 mb-4">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-sky-600 text-white flex items-center justify-center text-xl shadow">
-                        <i class="fa-solid fa-file-import"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-slate-800">Add & Import Submitted E-Posters</h3>
-                        <p class="text-xs text-slate-500">Easily update poster data or paste custom JSON metadata</p>
-                    </div>
-                </div>
-                <button onclick="closeBatchImporterModal()" class="text-slate-400 hover:text-slate-600 text-lg">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="space-y-4 text-xs text-slate-700">
-                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                    <h4 class="font-bold text-slate-800 mb-1">Option A: Edit Directly in `posters.csv` (Recommended)</h4>
-                    <p class="text-slate-600 leading-relaxed">
-                        Update your <code class="bg-white px-1.5 py-0.5 rounded border text-sky-600 font-bold">posters.csv</code> file in your repository. The portal automatically reloads and displays your entries every time someone visits the site!
-                    </p>
-                </div>
-
-                <div class="bg-sky-50 p-3.5 rounded-xl border border-sky-200">
-                    <h4 class="font-bold text-sky-900 mb-1">Option B: Load CSV File from Your Computer (Instant Offline Test)</h4>
-                    <p class="text-sky-700 mb-2">If you opened `index.html` directly on your computer, select your CSV file here:</p>
-                    <input type="file" id="localCsvFileInput" accept=".csv,.txt" onchange="handleLocalCSVUpload(event)" class="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-sky-600 file:text-white hover:file:bg-sky-700 cursor-pointer">
-                </div>
-
-                <div class="bg-slate-50 p-3.5 rounded-xl border border-slate-200">
-                    <h4 class="font-bold text-slate-800 mb-1">Option C: Quick Live JSON Import (Instant Preview)</h4>
-                    <p class="text-slate-600 mb-2">Paste a valid JSON array of poster objects below to test live without editing code:</p>
-                    <textarea id="jsonImportInput" rows="4" class="w-full p-3 font-mono text-[11px] bg-white border border-slate-300 rounded-xl focus:ring-2 focus:ring-sky-500 focus:outline-none" placeholder='[ { "id": "AA-001", "title": "Example Title", "category": "Scientific Research", "authors": "Author Name", "affiliations": "Hospital KL", "email": "author@hospital.org", "keywords": ["Breast Cancer"], "imageUrl": "", "background": "...", "methods": "...", "results": "...", "conclusion": "..." } ]'></textarea>
-                    <button onclick="importJSONData()" class="mt-2 px-4 py-2 bg-sky-600 hover:bg-sky-700 text-white font-bold text-xs rounded-xl shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate-right"></i> Load JSON into Portal
-                    </button>
-                </div>
-            </div>
-
-            <div class="mt-6 text-right border-t border-slate-200 pt-4">
-                <button onclick="closeBatchImporterModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow transition">Close Importer</button>
-            </div>
-        </div>
-    </div>
-
     <!-- Non-blocking Toast Notification Banner -->
     <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl text-xs font-semibold text-white bg-slate-900 border border-slate-700">
         <i id="toastIcon" class="fa-solid fa-circle-check text-sky-400 text-base"></i>
@@ -567,10 +445,40 @@
         let toastTimeout = null;
 
         window.addEventListener('DOMContentLoaded', async () => {
+            checkAndLoadGraphicBanner();
             updateBookmarkCounter();
             setupCanvasPanZoom();
             await loadPostersFromCSV();
         });
+
+        function checkAndLoadGraphicBanner() {
+            const candidateBanners = [
+                'assets/banner.jpg',
+                'assets/banner.png',
+                'assets/banner.jpeg',
+                'assets/banner.webp',
+                'banner.jpg',
+                'banner.png'
+            ];
+
+            const imgElem = document.getElementById('graphicBannerImg');
+            const container = document.getElementById('graphicBannerContainer');
+
+            function tryNext(index) {
+                if (index >= candidateBanners.length) return;
+                const testImg = new Image();
+                testImg.onload = function() {
+                    imgElem.src = candidateBanners[index];
+                    container.classList.remove('hidden');
+                };
+                testImg.onerror = function() {
+                    tryNext(index + 1);
+                };
+                testImg.src = candidateBanners[index];
+            }
+
+            tryNext(0);
+        }
 
         async function loadPostersFromCSV() {
             if (window.location.protocol === 'file:') {
@@ -1375,68 +1283,12 @@
             });
         }
 
-        function toggleKioskMode() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    showToast(`Fullscreen error: ${err.message}`, 'error');
-                });
-            } else {
-                document.exitFullscreen();
-            }
-        }
-
         function toggleModalFullscreen() {
             const modalElem = document.getElementById('posterModal');
             if (!document.fullscreenElement) {
                 modalElem.requestFullscreen().catch(err => console.log(err));
             } else {
                 document.exitFullscreen();
-            }
-        }
-
-        function openGitHubGuideModal() {
-            document.getElementById('githubGuideModal').classList.remove('hidden');
-        }
-
-        function closeGitHubGuideModal() {
-            document.getElementById('githubGuideModal').classList.add('hidden');
-        }
-
-        function openBatchImporterModal() {
-            document.getElementById('batchImporterModal').classList.remove('hidden');
-        }
-
-        function closeBatchImporterModal() {
-            document.getElementById('batchImporterModal').classList.add('hidden');
-        }
-
-        function importJSONData() {
-            const jsonText = document.getElementById('jsonImportInput').value.trim();
-            if (!jsonText) return;
-
-            try {
-                const parsed = JSON.parse(jsonText);
-                if (Array.isArray(parsed)) {
-                    parsed.forEach((item) => {
-                        const targetIndex = POSTER_DATABASE.findIndex(p => p.id === item.id);
-                        if (targetIndex !== -1) {
-                            POSTER_DATABASE[targetIndex] = { ...POSTER_DATABASE[targetIndex], ...item };
-                        } else {
-                            POSTER_DATABASE.push({
-                                views: 0,
-                                ...item
-                            });
-                        }
-                    });
-                    currentPosters = [...POSTER_DATABASE];
-                    renderPosterGallery();
-                    closeBatchImporterModal();
-                    showToast(`Successfully imported ${parsed.length} poster(s)!`, 'success');
-                } else {
-                    showToast('Invalid format: Input must be a JSON array of objects.', 'error');
-                }
-            } catch (err) {
-                showToast(`JSON Parsing Error: ${err.message}`, 'error');
             }
         }
     </script>
