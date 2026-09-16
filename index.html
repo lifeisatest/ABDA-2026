@@ -174,10 +174,10 @@
                 </div>
             </div>
 
-            <!-- Live Gallery Counters: Default 56 Posters -->
+            <!-- Live Gallery Counters: Default 55 Posters -->
             <div class="flex items-center space-x-4 ml-auto">
                 <span class="bg-slate-800 text-sky-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono">
-                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">56</span> Posters
+                    <i class="fa-solid fa-file-powerpoint mr-1.5 text-xs"></i><span id="totalPosterCount">55</span> Posters
                 </span>
                 <button onclick="filterBookmarks()" id="bookmarkFilterBtn" class="bg-slate-800 hover:bg-slate-700 text-pink-400 px-2.5 py-1 rounded-md border border-slate-700 font-mono transition flex items-center gap-1.5">
                     <i class="fa-solid fa-heart text-xs text-pink-500"></i>
@@ -459,10 +459,10 @@
         // Hardcoded submissions (optional fallback)
         const RAW_SUBMITTED_POSTERS = [];
 
-        // Generate 56 standardized template slots (1 through 57, excluding AA-034)
+        // Generate 55 standardized template slots (1 through 57, excluding AA-034 and AA-055)
         const POSTER_SLOT_IDS = [];
         for (let i = 1; i <= 57; i++) {
-            if (i === 34) continue; // Exclude AA-034
+            if (i === 34 || i === 55) continue; // Exclude AA-034 and AA-055
             POSTER_SLOT_IDS.push(`AA-${String(i).padStart(3, '0')}`);
         }
 
@@ -498,7 +498,7 @@
                 keywords: ["Template", "Pending Submission", "ABDA2026"],
                 imageUrl: "",
                 views: 0,
-                background: "ABSTRACT BACKGROUND & OBJECTIVES: Content pending submission by authors. You can edit this slot by adding poster details into posters.csv in your repository or importing via the 'Add/Import Posters' portal button.",
+                background: "ABSTRACT BACKGROUND & OBJECTIVES: Content pending submission by authors. You can edit this slot by adding poster details into posters.csv in your repository.",
                 methods: "MATERIALS & METHODS: Study methodology pending submission.",
                 results: "RESULTS & FINDINGS: Observational data, cohorts, and clinical results pending submission.",
                 conclusion: "CONCLUSION & IMPLICATIONS: Clinical conclusions pending submission."
@@ -621,7 +621,7 @@
 
         async function loadPostersFromCSV() {
             if (window.location.protocol === 'file:') {
-                console.warn('Opened via file:// protocol. Use "Add/Import Posters" -> "Load CSV File from Your Computer" to load locally.');
+                console.warn('Opened via file:// protocol.');
                 renderPosterGallery();
                 return;
             }
@@ -670,7 +670,7 @@
                                 return '';
                             };
                             const idVal = getVal(['id', 'poster id', 'abstract id', 'number']) || POSTER_SLOT_IDS[idx] || `AA-${String(idx + 1).padStart(3, '0')}`;
-                            if (idVal.toUpperCase() === 'AA-034') return; // Exclude AA-034 from CSV imports
+                            if (idVal.toUpperCase() === 'AA-034' || idVal.toUpperCase() === 'AA-055') return; // Exclude AA-034 and AA-055 from CSV imports
                             const titleVal = getVal(['title', 'poster title', 'name']);
                             if (!titleVal && !getVal(['background', 'abstract'])) return;
 
@@ -726,18 +726,6 @@
                     renderPosterGallery();
                 }
             });
-        }
-
-        function handleLocalCSVUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                parseAndApplyCSV(e.target.result);
-                closeBatchImporterModal();
-            };
-            reader.readAsText(file);
         }
 
         function renderPosterGallery() {
